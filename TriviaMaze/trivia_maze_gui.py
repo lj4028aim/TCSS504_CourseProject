@@ -1,0 +1,4 @@
+
+
+class TriviaMazeGUI:
+    pass
