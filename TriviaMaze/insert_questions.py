@@ -4,6 +4,11 @@ import pandas as pd
 
 
 def create_connection(db_file):
+    """
+       create a database connection to the SQLite database specified by the db_file
+       :param db_file: database file
+       :return: connection object or None
+       """
     conn = None
     try:
         conn = sqlite3.connect(db_file)
@@ -14,17 +19,21 @@ def create_connection(db_file):
     return conn
 
 
-def create_questions(conn, questions):
-    sql = """ INSERT INTO questions (Questions, answer_A, answer_B, answer_C, answer_D, Correct_answer)
-                VALUES (?, ?, ?, ?, ?, ?)"""
-    cur = conn.cursor()
-    cur.execute(sql, questions)
-    conn.commit()
-
-    return cur.lastrowid
+# def create_questions(conn, questions):
+#     sql = """ INSERT INTO questions (Questions, answer_A, answer_B, answer_C, answer_D, Correct_answer)
+#                 VALUES (?, ?, ?, ?, ?, ?)"""
+#     cur = conn.cursor()
+#     cur.execute(sql, questions)
+#     conn.commit()
+#
+#     return cur.lastrowid
 
 
 def main():
+    """
+     Inserting values stored in csv files into database with panda package
+     :return:
+     """
     database = "C:/Users/Ji/PycharmProjects/504pythonProject/TCSS504_CourseProject/TriviaMaze/TriviaMaze.db"
     question_path = "C:/Users/Ji/PycharmProjects/504pythonProject/TCSS504_CourseProject/TriviaMaze/TriviaMazeQuestion/csv_version/"
     conn = create_connection(database)
