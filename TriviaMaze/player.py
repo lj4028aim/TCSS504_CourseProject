@@ -20,7 +20,7 @@ class Player:
         Sets the name of the player
         :param name: name of player
         """
-        self.name = name
+        self.name = str(name)
 
     def get_golden_key(self):
         """
@@ -34,14 +34,14 @@ class Player:
         Sets the number of golden keys
         :param golden_key: number of golden keys
         """
-        self.golden_key = golden_key
+        self.golden_key = int(golden_key)
 
     def get_is_golden_key(self):
         """
         Returns true when there is a golden key
         :return: True if there is a golden key
         """
-        return self.is_golden_key == True
+        return self.is_golden_key
 
     def set_is_golden_key(self, is_golden_key):
         """
