@@ -1,6 +1,6 @@
 class Player:
 
-    def __init__(self, name = "player", golden_key = 0):
+    def __init__(self, name = "Player", golden_key = 0):
         self.name = str(name)
         self.golden_key = golden_key
         self.is_golden_key = False
