@@ -1,3 +1,5 @@
+from room import Room
+
 class Maze:
     """
     class is used to crete/contains a maze of Rooms.
