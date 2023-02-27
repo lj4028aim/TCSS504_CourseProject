@@ -19,11 +19,11 @@ def create_connection(db_file):
     return conn
 
 
-def get_questions():
+def get_questions(num_questions_expect):
     """
     Connecting to database and fetch certain amount of questions. Storing all fetched questions into
-    a dictionary.
-    :return: a dictionary which hold all questions and answers
+    :param num_questions_expect: number of questions expected
+    :return: a list which hold all questions. Each question and its associated answers is in dictionary format.
     """
     try:
         database = "/Users/jesseflores/Desktop/TCSS/TCSS504_CourseProject/TriviaMaze/TriviaMaze.db"
@@ -32,30 +32,22 @@ def get_questions():
 
         cur = conn.cursor()
         cur.execute("SELECT *  FROM Questions")
-        num_question = random.randrange(10, 50)
-        rows = cur.fetchmany(num_question)
+        rows = cur.fetchall()
 
-        question = []
-        dist1 = []
-        dist2 = []
-        dist3 = []
-        dist4 = []
-        key = []
-        for row in rows:
-            question.append(str(row[0]).strip())
-            dist1.append(str(row[1]))
-            dist2.append(str(row[2]))
-            dist3.append(str(row[3]))
-            dist4.append(str(row[4]))
-            key.append((str(row[5])))
+        questions = []
 
-        questions = {"question": question,
-                     "A": dist1,
-                     "B": dist2,
-                     "C": dist3,
-                     "D": dist4,
-                     "correct_answer": key}
+        num_questions = gen_num_questions(num_questions_expect)
+        for i in num_questions:
+            question = {"question": str(rows[i][0]).strip(),
+                        "A": str(rows[i][1]),
+                        "B": str(rows[i][2]),
+                        "C": str(rows[i][3]),
+                        "D": str(rows[i][4]),
+                        "correct_answer": str(rows[i][5])}
+            questions.append(question)
+
         cur.close()
+
         return questions
     except sqlite3.Error as error:
         print("Failed to read data from table", error)
@@ -64,24 +56,45 @@ def get_questions():
             conn.close()
 
 
-def get_answer(questions):
+def gen_num_questions(num_questions_expect):
     """
-    Get correct answer from dictionary of questions
-    :param questions: a dictionary which hold all questions and answers
+    Generate a list holds all unique randomly generated number
+    :return: a list which is composed of unique question index
+    """
+    total_num_questions = 49825  # number of questions stored in database
+    num_questions = []
+    while True:
+        num = random.randrange(0, total_num_questions)
+        num_questions.append(num)
+        if len(num_questions) == 1:
+            pass
+        else:
+            for i in range(len(num_questions) - 1):
+                if num == num_questions[i]:
+                    num_questions.pop()
+                    pass
+        if len(num_questions) == num_questions_expect:
+            break
+
+    return num_questions
+
+
+def get_answer(question):
+    """
+    Get correct answer from question
+    :param question: a dictionary which hold all questions and answers
     :return: correct answer
     """
-    return questions["correct_answer"]
+    return question["correct_answer"]
 
 
 if __name__ == "__main__":
-    q = get_questions()
-    answer = get_answer(q)
-    num_questions = len(q["question"])
+    num_questions_expect = 10
+    q = get_questions(num_questions_expect)
+    num_questions = len(gen_num_questions(num_questions_expect))
     print(f"There are totally {num_questions} questions selected: \n")
-    for i in range(len(q["question"])):
-        print(q["question"][i])
-        print(q["A"][i], end=", ")
-        print(q["B"][i], end=", ")
-        print(q["C"][i], end=", ")
-        print(q["D"][i])
-        print(get_answer(q)[i], "\n")
+
+    for i in range(len(q)):
+        print(f"{q[i]['question']}")
+        print(f"A: {q[i]['A']}, B: {q[i]['B']}, C: {q[i]['C']}, D: {q[i]['D']}")
+        print(f"correct answer: {get_answer(q[i])}\n")
