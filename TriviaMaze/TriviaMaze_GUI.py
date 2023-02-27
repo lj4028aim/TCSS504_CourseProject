@@ -1,5 +1,7 @@
+import textwrap
 from tkinter import *
 from tkinter import messagebox
+import select_questions as q
 
 
 def start_a_new_game():
@@ -21,8 +23,6 @@ def exit_game():
     answer = messagebox.askyesnocancel(title="Exit", message="Do you want to exit the game? ")
     if answer:
         return quit()
-    elif not answer:
-        return
     else:
         return
 
@@ -43,8 +43,21 @@ def how_to_play():
     return game_info
 
 
+def check_answer():
+    answer = q.get_answer(questions[0])
+    if x.get() == answer:
+        messagebox.showinfo(message="Correct! ")
+    else:
+        messagebox.showinfo(message="wrong answer! ")
+
+
 window = Tk()
+# set geometry of window
+window.geometry("1000x1000")
 window.title("Trivia Maze")
+title_icon = PhotoImage(file="GUI_Title_Icon.png")
+window.iconphoto(True, title_icon)
+# window.config(background="#32CD32")
 
 # create menu bar
 menubar = Menu(window)
@@ -70,4 +83,60 @@ menubar.add_cascade(label="Help", menu=helpMenu)
 helpMenu.add_command(label="About", command=about_the_game, font=("Arial", 10))
 helpMenu.add_command(label="Game Instruction", command=how_to_play, font=("Arial", 10))
 
+# input questions from select_questions.py and put all of them into frame
+question_frame = Frame(window)
+question_frame.pack()
+num_questions_expect = 10
+questions = q.get_questions(num_questions_expect)
+# insert text label for question body and all choices associated with it
+
+x = StringVar(question_frame, "questions[0]['A']")  # create a variable and initialize the variable
+# for i in range(len(questions)):
+questions_label = Label(question_frame,
+                        text=questions[0]["question"],
+                        wraplength=600,
+                        fg="#00FF00",
+                        bg="black",
+                        relief=SUNKEN,
+                        bd=5,
+                        )
+radiobutton_A = Radiobutton(question_frame,
+                            text=f"A: {questions[0]['A']}",
+                            variable=x,
+                            value=questions[0]['A'],
+                            padx=5,
+                            width=400,
+                            command=check_answer
+                            )
+radiobutton_B = Radiobutton(question_frame,
+                            text=f"B: {questions[0]['B']}",
+                            variable=x,
+                            value=questions[0]['B'],
+                            padx=5,
+                            width=400,
+                            command=check_answer
+                            )
+radiobutton_C = Radiobutton(question_frame,
+                            text=f"C: {questions[0]['C']}",
+                            variable=x,
+                            value=questions[0]['C'],
+                            padx=5,
+                            width=400,
+                            command=check_answer
+                            )
+radiobutton_D = Radiobutton(question_frame,
+                            text=f"D: {questions[0]['D']}",
+                            variable=x,
+                            value=questions[0]['D'],
+                            padx=5,
+                            width=400,
+                            command=check_answer
+                            )
+questions_label.pack()
+radiobutton_A.pack()
+radiobutton_B.pack()
+radiobutton_C.pack()
+radiobutton_D.pack()
+
+print(q.get_answer(questions[0]))
 window.mainloop()
