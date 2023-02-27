@@ -21,13 +21,13 @@ class ShapeTests(unittest.TestCase):
         self.assertEqual(expected_player, player.__repr__(), "expected attribute player to be Test")
 
     def test_create_player_with_int_name(self):
-        """Test creation of player with given name"""
+        """Test creation of player with given name as int type"""
         player = Player(100)
         expected_player = "name: 100, # of golden keys: 0, is a golden key: False"
         self.assertEqual(expected_player, player.__repr__(), "expected attribute player to be Test")
 
     def test_create_player_with_name_golden_keys(self):
-        """Test creation of player with given name"""
+        """Test creation of player with given name and given number of golden keys"""
         player = Player("Test", 10)
         expected_player = "name: Test, # of golden keys: 10, is a golden key: False"
         self.assertEqual(expected_player, player.__repr__(), "expected player name to be Test, golden keys to be 10")

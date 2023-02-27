@@ -26,7 +26,7 @@ def get_questions():
     :return: a dictionary which hold all questions and answers
     """
     try:
-        database = "C:/Users/Ji/PycharmProjects/504pythonProject/TCSS504_CourseProject/TriviaMaze/TriviaMaze.db"
+        database = "/Users/jesseflores/Desktop/TCSS/TCSS504_CourseProject/TriviaMaze/TriviaMaze.db"
 
         conn = create_connection(database)
 
