@@ -1,20 +1,8 @@
-from enum import Enum
-
-Season1 = Enum('Door_state', ['EXIST', 'OPEN', 'CLOSE'])
-
-
-class Door(Enum):
-    EXIST = "EXIST"
-    OPEN = "OPEN"
-    CLOSE = "CLOSE"
-
-
-
 
 
 class Room:
     """
-    room clasee is built to contain a default constructor and the following methods.
+    class Room is built to contain a default constructor and the following methods.
     """
 
     def __init__(self, row, col):
@@ -23,10 +11,10 @@ class Room:
         self._visited = False
         self.row = row
         self.col = col
-        self.north = Door.EXIST.value
-        self.south = Door.EXIST.value
-        self.west = Door.EXIST.value
-        self.east = Door.EXIST.value
+        self.north = False
+        self.south = False
+        self.west = False
+        self.east = False
 
     def __str__(self):
         """
@@ -76,6 +64,7 @@ class Room:
         """
         self._entrance = flag
 
+
     def __repr__(self):
         """
         :return: calling __str__ method.
@@ -116,6 +105,7 @@ class Room:
             print("*   *", end="")
         else:
             print("*****", end="")
+
 
     def can_enter(self):
         """
