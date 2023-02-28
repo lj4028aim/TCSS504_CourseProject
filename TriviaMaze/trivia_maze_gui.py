@@ -13,7 +13,7 @@ class TriviaMazeGUI:
         self.bg = PhotoImage(file="img/MonsterMaze.png")
         self.my_label = Label(self.root, image=self.bg)
         self.my_label.place(x=0, y=0)
-        self.begin_window = Frame(self.root)
+        self.begin_window = Frame(self.root, bg="#E59866")
         self.game_window = Frame(self.root)
         self.db = None
         self.display = None
@@ -31,18 +31,18 @@ class TriviaMazeGUI:
     def init_begin_menu(self):
         """Initiate the beginning menu for the game. Show buttons to start a new game, load the game, show instructions and
          exit the program"""
-        self.begin_window.place(x=430, y=600)
+        self.begin_window.place(x=430, y=550)
         new_game_button = Button(self.begin_window, text="New Game", font="Verdana 20",
                                  command=lambda: self.start_game(new_game=True))
-        new_game_button.grid(row=0)
+        new_game_button.grid(row=0, pady=5)
         continue_game_button = Button(self.begin_window, text="Continue Game", font="Verdana 20",
                                       command=self)
-        continue_game_button.grid(row=1)
+        continue_game_button.grid(row=1, pady=5)
         instructions_button = Button(self.begin_window, text="Instructions", font="Verdana 20",
                                      command=self.instructions)
-        instructions_button.grid(row=2)
+        instructions_button.grid(row=2, pady=5)
         exit_button = Button(self.begin_window, text="Exit", font="Verdana 20", command=self.exit_pressed)
-        exit_button.grid(row=3)
+        exit_button.grid(row=3, pady=5)
 
     def start_game(self, new_game=False):
         """Start a new game window"""
@@ -50,8 +50,7 @@ class TriviaMazeGUI:
             self.switch_screen(self.begin_window, self.game_window)
         for item in self.game_window.winfo_children():
             item.destroy()
-        self.display = Canvas(self.game_window, height=768,
-                              width=1024, bg="black")
+        self.display = Canvas(self.game_window, height=768, width=1024, bg="black")
         self.draw_all_image()
         self.draw_all_doors()
         self.display.grid(row=0, column=0, columnspan=6)
