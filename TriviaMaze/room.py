@@ -28,6 +28,7 @@ class Room:
         self.west = Door.EXIST.value
         self.east = Door.EXIST.value
 
+
     def __str__(self):
         """
         Method is used to build a 2D Graphical representation of the room.

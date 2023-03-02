@@ -2,6 +2,7 @@ import pygame
 
 from maze import Maze
 from tkinter import *
+from player import Player
 
 
 class TriviaMazeGUI:
@@ -9,7 +10,7 @@ class TriviaMazeGUI:
         self.maze = Maze(4, 4)
         self.root = Tk()
         self.root.geometry("1028x760")
-
+        self.player = Player()
         self.bg = PhotoImage(file="img/MonsterMaze.png")
         self.my_label = Label(self.root, image=self.bg)
         self.my_label.place(x=0, y=0)
@@ -25,6 +26,7 @@ class TriviaMazeGUI:
         self.door_open_image = PhotoImage(file='img/door_exist.png')
         self.door_exist_image = PhotoImage(file='img/door_exist.png')
         self.door_close_image = PhotoImage(file='img/door_close.png')
+        self.player_image = PhotoImage(file="img/player.png")
 
         self.root.mainloop()
 
@@ -52,9 +54,12 @@ class TriviaMazeGUI:
             item.destroy()
         self.display = Canvas(self.game_window, height=768, width=1024, bg="black")
         self.draw_all_image()
-        self.draw_all_doors()
         self.display.grid(row=0, column=0, columnspan=6)
-
+        self.root.bind("<Left>", self.on_arrow_key)
+        self.root.bind("<Right>", self.on_arrow_key)
+        self.root.bind("<Up>", self.on_arrow_key)
+        self.root.bind("<Down>", self.on_arrow_key)
+        self.game_window.focus_set()
 
     def switch_screen(self, curr_frame, new_frame):
         """Switches the window between what currently displayed"""
@@ -92,7 +97,7 @@ class TriviaMazeGUI:
                                       self.room_size * col + self.room_size * offset_dict[direction][1],
                                       image=self.door_exist_image, anchor="center")
 
-    def draw_all_image(self):
+    def draw_all_room(self):
         for i in range(self.maze.rows):
             for j in range(self.maze.cols):
                 self.draw_cell(i, j)
@@ -102,13 +107,25 @@ class TriviaMazeGUI:
             for j in range(self.maze.cols):
                 self.draw_doors(i, j)
 
+    def draw_player(self):
+        location = self.player.coordinates
+        row, col = location[0], location[1]
+        offset = self.room_size // 2
+        offset = 0
+        self.display.create_image(90 * col + offset, 90 * row + offset, image=self.player_image, anchor="nw")
+
+    def draw_all_image(self):
+        self.draw_all_room()
+        self.draw_all_doors()
+        self.draw_player()
+
     def instructions(self):
         instruction_frame = Frame(self.root, height=1000, width=800)
         instruction_file = open("Instructions_TriviaMaze.txt", 'r')
         instruction_text = instruction_file.read()
 
         instruction_frame.grid()
-        file = Text(instruction_frame, wrap="word",font="Verdana 20", height=30,width=80)
+        file = Text(instruction_frame, wrap="word", font="Verdana 20", height=30, width=80)
         file.grid(row=0, column=0)
         file.insert("1.0", instruction_text)
         instruction_file.close()
@@ -133,6 +150,32 @@ class TriviaMazeGUI:
 
         no = Button(exit_frame, text="NO", command=pop.destroy, bg="yellow")
         no.grid(row=0, column=2, padx=10)
+
+    def on_arrow_key(self, event):
+        room = self.maze.get_room()
+        cur_row = self.player.coordinates[0]
+        cur_col = self.player.coordinates[1]
+        door_dir = {"Left": [room[cur_row][cur_col].west, 0, -1],
+                    "Right": [room[cur_row][cur_col].east, 0, 1],
+                    "Up": [room[cur_row][cur_col].north, -1, 0],
+                    "Down": [room[cur_row][cur_col].south, 1, 0]}
+        for k, v in door_dir.items():
+            if k == event.keysym and v[0] == "EXIST":
+                # self.display_question
+                self.move_player(v[1], v[2])
+
+
+            elif k == event.keysym and v[0] == "OPEN":
+                print("test word")
+                self.move_player(v[1], v[2])
+
+    def move_player(self, x, y):
+        updated_x = self.player.coordinates[0] + x
+        updated_y = self.player.coordinates[1] + y
+        if 0 <= updated_x < self.maze.rows and 0 <= updated_y < self.maze.cols:
+            self.player.coordinates[0] = updated_x
+            self.player.coordinates[1] = updated_y
+            self.draw_all_image()
 
 
 if __name__ == '__main__':
