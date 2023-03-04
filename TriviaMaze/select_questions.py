@@ -3,7 +3,6 @@ from sqlite3 import Error
 import random
 import os
 
-
 # the relative file path
 path = 'db/TriviaMaze.db'
 
@@ -11,8 +10,6 @@ path = 'db/TriviaMaze.db'
 scriptdir = os.path.dirname(__file__)
 # add the relative path to the database file from there
 db_path = os.path.join(scriptdir, path)
-
-
 
 
 def create_connection(db_file):
@@ -38,12 +35,11 @@ def get_questions(num_questions_expect):
     :return: a list which hold all questions. Each question and its associated answers is in dictionary format.
     """
     try:
-
         conn = create_connection(db_path)
 
         cur = conn.cursor()
         cur.execute("SELECT *  FROM Questions")
-        rows = cur.fetchall()
+        rows = cur.fetchmany(200)
 
         questions = []
         num_questions = gen_num_questions(num_questions_expect)
@@ -55,6 +51,7 @@ def get_questions(num_questions_expect):
                         "D": str(rows[i][4]),
                         "correct_answer": str(rows[i][5])}
             questions.append(question)
+
         cur.close()
         return questions
     except sqlite3.Error as error:
@@ -69,7 +66,7 @@ def gen_num_questions(num_questions_expect):
     Generate a list holds all unique randomly generated number
     :return: a list which is composed of unique question index
     """
-    total_num_questions = 49825  # number of questions stored in database
+    total_num_questions = 200  # number of questions stored in database
     num_questions = []
     while True:
         num = random.randrange(0, total_num_questions)
@@ -86,25 +83,23 @@ def gen_num_questions(num_questions_expect):
 
     return num_questions
 
-def get_answer(questions):
+
+def get_answer(question):
     """
-    Get correct answer from dictionary of questions
-    :param questions: a dictionary which hold all questions and answers
+    Get correct answer from question
+    :param question: a dictionary which hold all questions and answers
     :return: correct answer
     """
-    return questions["correct_answer"]
+    return question["correct_answer"]
 
 
 if __name__ == "__main__":
-    pass
-    # q = get_questions()
-    # answer = get_answer(q)
-    # num_questions = len(q["question"])
-    # print(f"There are totally {num_questions} questions selected: \n")
-    # for i in range(len(q["question"])):
-    #     print(q["question"][i])
-    #     print(q["A"][i], end=", ")
-    #     print(q["B"][i], end=", ")
-    #     print(q["C"][i], end=", ")
-    #     print(q["D"][i])
-    #     print(get_answer(q)[i], "\n")
+    num_questions_expect = 100
+    q = get_questions(num_questions_expect)
+    num_questions = len(gen_num_questions(num_questions_expect))
+    print(f"There are totally {num_questions} questions selected: \n")
+
+    for i in range(len(q)):
+        print(f"{q[i]['question']}")
+        print(f"A: {q[i]['A']}, B: {q[i]['B']}, C: {q[i]['C']}, D: {q[i]['D']}")
+        print(f"correct answer: {get_answer(q[i])}\n")

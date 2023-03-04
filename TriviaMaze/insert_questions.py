@@ -33,15 +33,6 @@ def create_connection(db_file):
     return conn
 
 
-# def create_questions(conn, questions):
-#     sql = """ INSERT INTO questions (Questions, answer_A, answer_B, answer_C, answer_D, Correct_answer)
-#                 VALUES (?, ?, ?, ?, ?, ?)"""
-#     cur = conn.cursor()
-#     cur.execute(sql, questions)
-#     conn.commit()
-#
-#     return cur.lastrowid
-
 
 def main():
     """
