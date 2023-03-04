@@ -94,7 +94,7 @@ def get_answer(question):
 
 
 if __name__ == "__main__":
-    num_questions_expect = 100
+    num_questions_expect = 200
     q = get_questions(num_questions_expect)
     num_questions = len(gen_num_questions(num_questions_expect))
     print(f"There are totally {num_questions} questions selected: \n")

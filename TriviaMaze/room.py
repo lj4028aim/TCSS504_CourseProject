@@ -1,8 +1,5 @@
 from enum import Enum
-
-Season1 = Enum('Door_state', ['EXIST', 'OPEN', 'CLOSE'])
-
-
+# Enum class to list value for Doors, prevent any other values set to door
 class Door(Enum):
     EXIST = "EXIST"
     OPEN = "OPEN"
@@ -10,13 +7,10 @@ class Door(Enum):
 
 
 
-
-
 class Room:
     """
-    room clasee is built to contain a default constructor and the following methods.
+    room class is built to contain a default constructor and the following methods.
     """
-
     def __init__(self, row, col):
         self._exit = False
         self._entrance = False

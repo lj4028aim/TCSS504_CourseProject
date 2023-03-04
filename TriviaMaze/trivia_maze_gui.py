@@ -1,16 +1,17 @@
 import pygame
-
 from maze import Maze
 from tkinter import *
 from player import Player
 from tkinter import messagebox
 import select_questions as q
+import ctypes as ct
 
-
+MAZE_ROWS = 5
+MAZE_COLS = 5
 class TriviaMazeGUI:
     def __init__(self):
         self.question_frame = None
-        self.maze = Maze(5, 5)
+        self.maze = Maze(MAZE_ROWS, MAZE_COLS)
         self.root = Tk()
         self.root.geometry("1028x760")
         self.player = Player()
@@ -25,71 +26,31 @@ class TriviaMazeGUI:
         # self.root.resizable(True, True)
         self.root.title("TriviaMaze")
         self.init_begin_menu()
-        self.init_menubar()
-        # self.game_window.grid_forget()
         self.door_open_image = PhotoImage(file='img/door_exist.png')
         self.door_exist_image = PhotoImage(file='img/door_exist.png')
         self.door_close_image = PhotoImage(file='img/door_close.png')
         self.player_image = PhotoImage(file="img/player.png")
         self.check_question_cnt = 0
+        self.root.configure(background="#222246")
+
 
         self.root.mainloop()
 
     def init_begin_menu(self):
         """Initiate the beginning menu for the game. Show buttons to start a new game, load the game, show instructions and
          exit the program"""
-        self.begin_window.place(x=430, y=500)
+        self.begin_window.place(x=430, y=550)
         new_game_button = Button(self.begin_window, text="New Game", font="Verdana 20",
                                  command=lambda: self.start_game(new_game=True))
         new_game_button.grid(row=0, pady=5)
-        continue_game_button = Button(self.begin_window, text="Continue Game", font="Verdana 20",
+        load_game_button = Button(self.begin_window, text="Load Game", font="Verdana 20",
                                       command=self)
-        continue_game_button.grid(row=1, pady=5)
+        load_game_button.grid(row=1, pady=5)
         instructions_button = Button(self.begin_window, text="Instructions", font="Verdana 20",
                                      command=self.instructions)
         instructions_button.grid(row=2, pady=5)
         exit_button = Button(self.begin_window, text="Exit", font="Verdana 20", command=self.exit_pressed)
         exit_button.grid(row=3, pady=5)
-
-    def about_the_game(self):
-        with open("about_message.txt") as file:
-            about_message = file.read()
-
-        about_info = messagebox.showinfo(title="About the game", message=about_message)
-        return about_info
-
-    def exit_game(self):
-        answer = messagebox.askyesnocancel(title="Exit", message="Do you want to exit the game? ")
-        if answer:
-            return quit()
-        else:
-            return
-
-    def how_to_play(self):
-        with open("Instructions_TriviaMaze.txt") as file:
-            instruction_message = file.read()
-
-        game_info = messagebox.showinfo(title="How to Play?", message=instruction_message)
-        return game_info
-
-    def init_menubar(self):
-        # add 'File' menu bar
-        menubar = Menu(self.root)
-        self.root.config(menu=menubar)
-        fileMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
-        menubar.add_cascade(label="File", menu=fileMenu)
-        # add drop down list for File menu bar
-        fileMenu.add_command(label="Start New Game", command=self.start_game, font=("Arial", 10))
-        fileMenu.add_command(label="Save Current Game", command=self.save_current_game, font=("Arial", 10))
-        fileMenu.add_command(label="Load Last Game", command=self.load_last_game, font=("Arial", 10))
-        fileMenu.add_separator()
-        fileMenu.add_command(label="Exit Game", command=self.exit_game, font=("Arial", 10))
-        # add 'Help' menu bar
-        helpMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
-        menubar.add_cascade(label="Help", menu=helpMenu)
-        # add drop down list for help menu bar
-        helpMenu.add_command(label="About", command=self.about_the_game, font=("Arial", 10))
-        helpMenu.add_command(label="Game Instruction", command=self.how_to_play, font=("Arial", 10))
 
     def start_game(self, new_game=False):
         """Start a new game window"""
@@ -99,7 +60,7 @@ class TriviaMazeGUI:
             item.destroy()
         self.display = Canvas(self.game_window, height=500, width=1028, bg="black")
         self.draw_all_image()
-        self.display.grid(row=0, column=0, rowspan= 1, columnspan=1)
+        self.display.grid(row=0, column=0, rowspan=1, columnspan=1)
         self.root.bind("<Left>", self.on_arrow_key)
         self.root.bind("<Right>", self.on_arrow_key)
         self.root.bind("<Up>", self.on_arrow_key)
@@ -108,15 +69,6 @@ class TriviaMazeGUI:
         self.question_frame.grid_propagate(0)
         self.question_frame.grid(row=1, column=0)
         self.game_window.focus_set()
-
-    def save_current_game(self):
-        print(f"It should be able to save current game.(for test only) ")
-        pass
-
-    def load_last_game(self):
-        print(f"It should load last saved game.(for test only) ")
-        pass
-
 
     def switch_screen(self, curr_frame, new_frame):
         """Switches the window between what currently displayed"""
@@ -129,10 +81,10 @@ class TriviaMazeGUI:
                                       self.room_size * (row + 1) - 5, fill='pink', outline="")
 
     def draw_doors(self, row, col):
-        room = self.maze.get_room()
+        rooms = self.maze.get_room()
         direction = ["north", "south", "east", "west"]
-        door_state_map = {"north": room[row][col].north, "south": room[row][col].south, "east": room[row][col].east,
-                          "west": room[row][col].west}
+        door_state_map = {"north": rooms[row][col].north, "south": rooms[row][col].south, "east": rooms[row][col].east,
+                          "west": rooms[row][col].west}
         for dic in direction:
             if (row == 0 and dic == "east") or (row == self.maze.cols - 1 and dic == "west") or (
                     col == 0 and dic == "north") or (col == self.maze.rows - 1 and dic == "south"):
@@ -209,6 +161,10 @@ class TriviaMazeGUI:
         no.grid(row=0, column=2, padx=10)
 
     def on_arrow_key(self, event):
+        """
+        Method to move the player and display the question according to door state
+        :return: none
+        """
         room = self.maze.get_room()
         cur_row = self.player.coordinates[0]
         cur_col = self.player.coordinates[1]
@@ -219,10 +175,9 @@ class TriviaMazeGUI:
         for k, v in door_dir.items():
             if k == event.keysym and v[0] == "EXIST":
                 self.clear_text_display()
-                self.display_question()
-                self.move_player(v[1], v[2])
+                self.display_question(v[1], v[2])
+                # self.move_player(v[1], v[2])
             elif k == event.keysym and v[0] == "OPEN":
-                print("test word")
                 self.move_player(v[1], v[2])
 
     def move_player(self, x, y):
@@ -234,7 +189,7 @@ class TriviaMazeGUI:
             self.draw_all_image()
 
 
-    def display_question(self):
+    def display_question(self, offset_x, offset_y):
         # input questions from select_questions.py and put all of them into frame
         num_questions_expect = 1
         questions = q.get_questions(num_questions_expect)
@@ -258,23 +213,23 @@ class TriviaMazeGUI:
                                     value=questions[0]['A'],
                                     padx=5,
                                     height=2,
-                                    command=lambda: self.check_answer(questions, x))
-        radiobutton_A.grid(row=1, column=0,sticky=E+W)
+                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y))
+        radiobutton_A.grid(row=1, column=0, sticky=E+W)
         radiobutton_B = Radiobutton(self.question_frame,
                                     text=f"B: {questions[0]['B']}",
                                     variable=x,
                                     value=questions[0]['B'],
                                     padx=5,
                                     height=2,
-                                    command=lambda: self.check_answer(questions, x))
-        radiobutton_B.grid(row=2, column=0,sticky=E + W)
+                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y))
+        radiobutton_B.grid(row=2, column=0, sticky=E + W)
         radiobutton_C = Radiobutton(self.question_frame,
                                     text=f"C: {questions[0]['C']}",
                                     variable=x,
                                     value=questions[0]['C'],
                                     padx=5,
                                     height=2,
-                                    command=lambda: self.check_answer(questions, x))
+                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y))
         if questions[0]['C'] != "None":
             radiobutton_C.grid(row=3, column=0, sticky=E + W)
         radiobutton_D = Radiobutton(self.question_frame,
@@ -283,26 +238,25 @@ class TriviaMazeGUI:
                                     value=questions[0]['D'],
                                     padx=5,
                                     height=2,
-                                    command=lambda: self.check_answer(questions, x))
+                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y))
         if questions[0]['D'] != "None":
             radiobutton_D.grid(row=4, column=0, sticky=E + W)
 
 
-    def check_answer(self, questions, x):
+    def check_answer(self, questions, x, offset_x, offset_y):
         answer = q.get_answer(questions[0])
         if self.check_question_cnt > 0:
             return
         self.check_question_cnt += 1
         if x.get() == answer:
             # messagebox.showinfo(message="Correct! ")
-            answer = Label(self.question_frame, text='Correct!', font="Times 30", anchor=W, fg="green", )
-            answer.grid(row=2, column=1)
-
+            answer_result = Label(self.question_frame, text='Correct!', font="Times 30", anchor=W, fg="green", )
+            answer_result.grid(row=2, column=1)
+            self.move_player(offset_x, offset_y)
         else:
             # messagebox.showinfo(message="wrong answer! ")
-            answer = Label(self.question_frame, text='wrong answer', font="Times 30", anchor=W, fg="red",)
-            answer.grid(row=2, column=1)
-
+            answer_result = Label(self.question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red",)
+            answer_result.grid(row=2, column=1)
 
 
 

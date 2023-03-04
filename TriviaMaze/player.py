@@ -1,8 +1,8 @@
 class Player:
 
-    def __init__(self, name = "warrior", golden_key = 0):
+    def __init__(self, name="monster", golden_key=0):
         self.name = name
-        self.coordinates = [1,1]
+        self.coordinates = [1, 1]
         self.golden_key = golden_key
         self.is_golden_key = False
 
