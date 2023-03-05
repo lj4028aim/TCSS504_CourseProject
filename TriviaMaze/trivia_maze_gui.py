@@ -5,6 +5,7 @@ from tkinter import *
 from player import Player
 from tkinter import messagebox
 import select_questions as q
+import pickle
 
 
 class TriviaMazeGUI:
@@ -42,7 +43,7 @@ class TriviaMazeGUI:
                                  command=lambda: self.start_game(new_game=True))
         new_game_button.grid(row=0, pady=5)
         continue_game_button = Button(self.begin_window, text="Continue Game", font="Verdana 20",
-                                      command=self)
+                                      command=self.load_game)
         continue_game_button.grid(row=1, pady=5)
         instructions_button = Button(self.begin_window, text="Instructions", font="Verdana 20",
                                      command=self.instructions)
@@ -67,6 +68,39 @@ class TriviaMazeGUI:
         self.question_frame.grid_propagate(0)
         self.question_frame.grid(row=1, column=0)
         self.game_window.focus_set()
+
+    def save_game(self):
+        """Save the progress of the game"""
+        # keep a list of data needed to store progress
+        current_progress = [self.player, self.maze, self.room_size]
+
+        # create a binary file for writing 'wb' called laptopstore.pkl
+        # pkl extension is not necessary but it is standard for pickle files
+        pickle_file = open('game_data.pkl', 'wb')
+
+        # pickle the nested object and write it to file
+        pickle.dump(current_progress, pickle_file)
+
+        # close the file
+        pickle_file.close()
+
+    def load_game(self):
+        """Load the saved progress and start the game window"""
+        # now read the pickle file, 'rb' open a binary file for reading
+        pickle_file = open('game_data.pkl', 'rb')
+
+        # unpickle the nested object from the file
+        # [self.maze, self.room_size, self.player]
+        saved_data = pickle.load(pickle_file)
+
+        # close file
+        pickle_file.close()
+
+        print("Here are the unpickled player from", saved_data[0].name)
+        self.player = saved_data[0]
+        self.maze = saved_data[1]
+        self.room_size = saved_data[2]
+        self.start_game(True)
 
     def switch_screen(self, curr_frame, new_frame):
         """Switches the window between what currently displayed"""
@@ -181,6 +215,8 @@ class TriviaMazeGUI:
         if 0 <= updated_x < self.maze.rows and 0 <= updated_y < self.maze.cols:
             self.player.coordinates[0] = updated_x
             self.player.coordinates[1] = updated_y
+            # ----- testing ----------
+            # print(f"player coordinates {self.player.coordinates[0]}, {self.player.coordinates[1]}")
             self.draw_all_image()
 
 
