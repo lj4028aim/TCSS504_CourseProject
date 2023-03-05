@@ -289,7 +289,7 @@ def dungeon_adventure_event_checker(my_map, window, ad):
             window['-P2-'].update('Hit point: ' + str(ad.hit_point))
             window['-P3-'].update('Healing potion: ' + str(ad._number_healing_potions))
         draw_image(current_x, current_y, my_map, window)
-        window['Graph'].draw_image(filename='images/Huntress.png',
+        window['Graph'].draw_image(filename='images/player.png',
                                    location=(current_y * 60, my_map.rows * 60 - current_x * 60))
         if room[current_x][current_y].get_pit():
             ad.damage_by_pit()
@@ -344,7 +344,7 @@ def dungeon_adventure_event_checker(my_map, window, ad):
             current_x = random.randint(0, my_map.rows - 1)
             current_y = random.randint(0, my_map.cols - 1)
             draw_image(current_x, current_y, my_map, window)
-            window['Graph'].draw_image(filename='images/Huntress.png',
+            window['Graph'].draw_image(filename='images/player.png',
                                        location=(current_y * 60, my_map.rows * 60 - current_x * 60))
             window['-P2-'].update('Hit point: ' + str(ad.hit_point))
             window['-P3-'].update('Healing potion: ' + str(ad._number_healing_potions))

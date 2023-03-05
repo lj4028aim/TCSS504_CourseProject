@@ -1,0 +1,7 @@
+The goal for player is navigating through from entrance to exit in the maze if all questions are answered correctly.
+
+Player will start at a random location in the maze. Maze is composed of different size of rooms.
+Each room will have one or more doors. The player shall choose one door to precede the game. Once the door is selected, one question will pop up.
+
+As a player, you must correctly answer the question to pass through the door and be able to access to next room.
+If the answer to the question is wrong, door will be closed permenately. If no door can be selected, game will be terminated!

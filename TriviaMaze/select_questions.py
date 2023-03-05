@@ -1,6 +1,15 @@
 import sqlite3
 from sqlite3 import Error
 import random
+import os
+
+# the relative file path
+path = 'db/TriviaMaze.db'
+
+# get the path to the directory this script is in
+scriptdir = os.path.dirname(__file__)
+# add the relative path to the database file from there
+db_path = os.path.join(scriptdir, path)
 
 
 def create_connection(db_file):
@@ -26,16 +35,13 @@ def get_questions(num_questions_expect):
     :return: a list which hold all questions. Each question and its associated answers is in dictionary format.
     """
     try:
-        database = "C:/Users/Ji/PycharmProjects/504pythonProject/TCSS504_CourseProject/TriviaMaze/TriviaMaze.db"
-
-        conn = create_connection(database)
+        conn = create_connection(db_path)
 
         cur = conn.cursor()
         cur.execute("SELECT *  FROM Questions")
-        rows = cur.fetchall()
+        rows = cur.fetchmany(200)
 
         questions = []
-
         num_questions = gen_num_questions(num_questions_expect)
         for i in num_questions:
             question = {"question": str(rows[i][0]).strip(),
@@ -61,7 +67,7 @@ def gen_num_questions(num_questions_expect):
     Generate a list holds all unique randomly generated number
     :return: a list which is composed of unique question index
     """
-    total_num_questions = 49825  # number of questions stored in database
+    total_num_questions = 200  # number of questions stored in database
     num_questions = []
     while True:
         num = random.randrange(0, total_num_questions)
@@ -89,7 +95,7 @@ def get_answer(question):
 
 
 if __name__ == "__main__":
-    num_questions_expect = 10
+    num_questions_expect = 100
     q = get_questions(num_questions_expect)
     num_questions = len(gen_num_questions(num_questions_expect))
     print(f"There are totally {num_questions} questions selected: \n")
