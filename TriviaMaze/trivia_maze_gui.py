@@ -56,7 +56,7 @@ class TriviaMazeGUI:
         with open("about_message.txt") as file:
             about_message = file.read()
 
-        about_info = messagebox.showinfo(title="About the game", message=about_message)
+        about_info = messagebox.showinfo(title="About the Game", message=about_message)
         return about_info
 
     def exit_game(self):
@@ -80,7 +80,7 @@ class TriviaMazeGUI:
         fileMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
         menubar.add_cascade(label="File", menu=fileMenu)
         # add drop down list for File menu bar
-        fileMenu.add_command(label="Start New Game", command=self.start_game, font=("Arial", 10))
+        fileMenu.add_command(label="Start New Game", command=lambda: self.start_game(new_game=True), font=("Arial", 10))
         fileMenu.add_command(label="Save Current Game", command=self.save_game, font=("Arial", 10))
         fileMenu.add_command(label="Load Last Game", command=self.load_game, font=("Arial", 10))
         fileMenu.add_separator()
@@ -89,8 +89,9 @@ class TriviaMazeGUI:
         helpMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
         menubar.add_cascade(label="Help", menu=helpMenu)
         # add drop down list for help menu bar
-        helpMenu.add_command(label="About", command=self.about_the_game, font=("Arial", 10))
         helpMenu.add_command(label="Game Instruction", command=self.how_to_play, font=("Arial", 10))
+        helpMenu.add_separator()
+        helpMenu.add_command(label="About", command=self.about_the_game, font=("Arial", 10))
 
     def start_game(self, new_game=False):
         """Start a new game window"""
@@ -124,6 +125,8 @@ class TriviaMazeGUI:
 
         # close the file
         pickle_file.close()
+        # show message box to inform user
+        messagebox.showinfo(title="Save Current Game", message="Current game has been saved! ")
 
     def load_game(self):
         """Load the saved progress and start the game window"""
@@ -136,20 +139,14 @@ class TriviaMazeGUI:
 
         # close file
         pickle_file.close()
+        # show message box to inform user
+        messagebox.showinfo(title="Load Last Game", message="Last saved game has been loaded! ")
 
         print("Here are the unpickled player from", saved_data[0].name)
         self.player = saved_data[0]
         self.maze = saved_data[1]
         self.room_size = saved_data[2]
         self.start_game(True)
-
-    # def save_current_game(self):
-    #     print(f"It should be able to save current game.(for test only) ")
-    #     pass
-    #
-    # def load_last_game(self):
-    #     print(f"It should load last saved game.(for test only) ")
-    #     pass
 
     def switch_screen(self, curr_frame, new_frame):
         """Switches the window between what currently displayed"""
