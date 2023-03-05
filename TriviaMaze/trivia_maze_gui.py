@@ -26,6 +26,7 @@ class TriviaMazeGUI:
         # self.root.resizable(True, True)
         self.root.title("TriviaMaze")
         self.init_begin_menu()
+        self.init_menubar()
         # self.game_window.grid_forget()
         self.door_open_image = PhotoImage(file='img/door_exist.png')
         self.door_exist_image = PhotoImage(file='img/door_exist.png')
@@ -38,7 +39,7 @@ class TriviaMazeGUI:
     def init_begin_menu(self):
         """Initiate the beginning menu for the game. Show buttons to start a new game, load the game, show instructions and
          exit the program"""
-        self.begin_window.place(x=430, y=550)
+        self.begin_window.place(x=430, y=500)
         new_game_button = Button(self.begin_window, text="New Game", font="Verdana 20",
                                  command=lambda: self.start_game(new_game=True))
         new_game_button.grid(row=0, pady=5)
@@ -50,6 +51,46 @@ class TriviaMazeGUI:
         instructions_button.grid(row=2, pady=5)
         exit_button = Button(self.begin_window, text="Exit", font="Verdana 20", command=self.exit_pressed)
         exit_button.grid(row=3, pady=5)
+
+    def about_the_game(self):
+        with open("about_message.txt") as file:
+            about_message = file.read()
+
+        about_info = messagebox.showinfo(title="About the game", message=about_message)
+        return about_info
+
+    def exit_game(self):
+        answer = messagebox.askyesnocancel(title="Exit", message="Do you want to exit the game? ")
+        if answer:
+            return quit()
+        else:
+            return
+
+    def how_to_play(self):
+        with open("Instructions_TriviaMaze.txt") as file:
+            instruction_message = file.read()
+
+        game_info = messagebox.showinfo(title="How to Play?", message=instruction_message)
+        return game_info
+
+    def init_menubar(self):
+        # add 'File' menu bar
+        menubar = Menu(self.root)
+        self.root.config(menu=menubar)
+        fileMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
+        menubar.add_cascade(label="File", menu=fileMenu)
+        # add drop down list for File menu bar
+        fileMenu.add_command(label="Start New Game", command=self.start_game, font=("Arial", 10))
+        fileMenu.add_command(label="Save Current Game", command=self.save_game, font=("Arial", 10))
+        fileMenu.add_command(label="Load Last Game", command=self.load_game, font=("Arial", 10))
+        fileMenu.add_separator()
+        fileMenu.add_command(label="Exit Game", command=self.exit_game, font=("Arial", 10))
+        # add 'Help' menu bar
+        helpMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
+        menubar.add_cascade(label="Help", menu=helpMenu)
+        # add drop down list for help menu bar
+        helpMenu.add_command(label="About", command=self.about_the_game, font=("Arial", 10))
+        helpMenu.add_command(label="Game Instruction", command=self.how_to_play, font=("Arial", 10))
 
     def start_game(self, new_game=False):
         """Start a new game window"""
@@ -69,13 +110,13 @@ class TriviaMazeGUI:
         self.question_frame.grid(row=1, column=0)
         self.game_window.focus_set()
 
+
     def save_game(self):
         """Save the progress of the game"""
         # keep a list of data needed to store progress
         current_progress = [self.player, self.maze, self.room_size]
 
         # create a binary file for writing 'wb' called laptopstore.pkl
-        # pkl extension is not necessary but it is standard for pickle files
         pickle_file = open('game_data.pkl', 'wb')
 
         # pickle the nested object and write it to file
@@ -101,6 +142,14 @@ class TriviaMazeGUI:
         self.maze = saved_data[1]
         self.room_size = saved_data[2]
         self.start_game(True)
+
+    # def save_current_game(self):
+    #     print(f"It should be able to save current game.(for test only) ")
+    #     pass
+    #
+    # def load_last_game(self):
+    #     print(f"It should load last saved game.(for test only) ")
+    #     pass
 
     def switch_screen(self, curr_frame, new_frame):
         """Switches the window between what currently displayed"""
