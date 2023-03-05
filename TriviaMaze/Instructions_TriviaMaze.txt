@@ -1,4 +1,4 @@
-Click "New Game" to star a new game or click "Start New Game" under File menu.
+Click "New Game" to start a new game or click "Start New Game" under File menu.
 
 Click "Continue Gmae" to load last saved game or click "Load Last Gmae" under File menu.
 
