@@ -80,7 +80,7 @@ class TriviaMazeGUI:
         fileMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
         menubar.add_cascade(label="File", menu=fileMenu)
         # add drop down list for File menu bar
-        fileMenu.add_command(label="Start New Game", command=lambda: self.start_game(new_game=True), font=("Arial", 10))
+        fileMenu.add_command(label="Start New Game", command=self.start_new_game, font=("Arial", 10))
         fileMenu.add_command(label="Save Current Game", command=self.save_game, font=("Arial", 10))
         fileMenu.add_command(label="Load Last Game", command=self.load_game, font=("Arial", 10))
         fileMenu.add_separator()
@@ -111,7 +111,14 @@ class TriviaMazeGUI:
         self.question_frame.grid(row=1, column=0)
         self.game_window.focus_set()
 
+    def start_new_game(self):
+        self.reset_game_progress()
+        self.start_game(True)
 
+    def reset_game_progress(self):
+        self.maze = Maze(5, 5)
+        self.player = Player()
+        self.room_size = 90
     def save_game(self):
         """Save the progress of the game"""
         # keep a list of data needed to store progress
