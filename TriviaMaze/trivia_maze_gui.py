@@ -4,7 +4,7 @@ from maze import Maze
 from tkinter import *
 from player import Player
 from tkinter import messagebox
-import select_questions as q
+from question import Question
 import pickle
 
 
@@ -43,6 +43,7 @@ class TriviaMazeGUI:
         new_game_button = Button(self.begin_window, text="New Game", font="Verdana 20",
                                  command=lambda: self.start_game(new_game=True))
         new_game_button.grid(row=0, pady=5)
+        # new_game_button_1.grid(row=0, column=0)
         continue_game_button = Button(self.begin_window, text="Continue Game", font="Verdana 20",
                                       command=self.load_game)
         continue_game_button.grid(row=1, pady=5)
@@ -52,21 +53,21 @@ class TriviaMazeGUI:
         exit_button = Button(self.begin_window, text="Exit", font="Verdana 20", command=self.exit_pressed)
         exit_button.grid(row=3, pady=5)
 
-    def about_the_game(self):
+    def about_the_game(self, event=None):
         with open("about_message.txt") as file:
             about_message = file.read()
 
         about_info = messagebox.showinfo(title="About the Game", message=about_message)
         return about_info
 
-    def exit_game(self):
+    def exit_game(self, event=None):
         answer = messagebox.askyesnocancel(title="Exit", message="Do you want to exit the game? ")
         if answer:
             return quit()
         else:
             return
 
-    def how_to_play(self):
+    def how_to_play(self, event=None):
         with open("Instructions_TriviaMaze.txt") as file:
             instruction_message = file.read()
 
@@ -80,26 +81,39 @@ class TriviaMazeGUI:
         fileMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
         menubar.add_cascade(label="File", menu=fileMenu)
         # add drop down list for File menu bar
-        fileMenu.add_command(label="Start New Game", command=lambda: self.start_game(new_game=True), font=("Arial", 10))
-        fileMenu.add_command(label="Save Current Game", command=self.save_game, font=("Arial", 10))
-        fileMenu.add_command(label="Load Last Game", command=self.load_game, font=("Arial", 10))
+        fileMenu.add_command(label="Start New Game", accelerator="CTRL + N",
+                             command=lambda: self.start_game(new_game=True), font=("Arial", 10))
+        fileMenu.add_command(label="Save Current Game", accelerator="CTRL + S",
+                             command=self.save_game, font=("Arial", 10))
+        fileMenu.add_command(label="Load Last Game", accelerator="CTRL + L",
+                             command=self.load_game, font=("Arial", 10))
         fileMenu.add_separator()
-        fileMenu.add_command(label="Exit Game", command=self.exit_game, font=("Arial", 10))
+        fileMenu.add_command(label="Exit Game", accelerator="CTRL + Q",
+                             command=self.exit_game, font=("Arial", 10))
         # add 'Help' menu bar
         helpMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
         menubar.add_cascade(label="Help", menu=helpMenu)
         # add drop down list for help menu bar
-        helpMenu.add_command(label="Game Instruction", command=self.how_to_play, font=("Arial", 10))
+        helpMenu.add_command(label="Game Instruction", accelerator="F1",
+                             command=self.how_to_play, font=("Arial", 10))
         helpMenu.add_separator()
-        helpMenu.add_command(label="About", command=self.about_the_game, font=("Arial", 10))
+        helpMenu.add_command(label="About", accelerator="CTRL + B",
+                             command=self.about_the_game, font=("Arial", 10))
 
-    def start_game(self, new_game=False):
+        self.root.bind("<Control-n>", self.start_game)
+        self.root.bind("<Control-s>", self.save_game)
+        self.root.bind("<Control-q>", self.exit_game)
+        self.root.bind("<Control-l>", self.load_game)
+        self.root.bind("<F1>", self.how_to_play)
+        self.root.bind("<Control-b>", self.about_the_game)
+
+    def start_game(self, new_game=False, event=None):
         """Start a new game window"""
         if new_game:
             self.switch_screen(self.begin_window, self.game_window)
         for item in self.game_window.winfo_children():
             item.destroy()
-        self.display = Canvas(self.game_window, height=500, width=1028, bg="black")
+        self.display = Canvas(self.game_window, height=1028, width=1028, bg="black")
         self.draw_all_image()
         self.display.grid(row=0, column=0, rowspan= 1, columnspan=1)
         self.root.bind("<Left>", self.on_arrow_key)
@@ -111,8 +125,12 @@ class TriviaMazeGUI:
         self.question_frame.grid(row=1, column=0)
         self.game_window.focus_set()
 
+        # new_game_button_1 = Button(self.game_window, text="New Game", font="Verdana 10",
+        #                          command=lambda: self.start_game(new_game=True))
+        # new_game_button_1.grid(row=3, column=3)
 
-    def save_game(self):
+
+    def save_game(self, event=None):
         """Save the progress of the game"""
         # keep a list of data needed to store progress
         current_progress = [self.player, self.maze, self.room_size]
@@ -128,7 +146,7 @@ class TriviaMazeGUI:
         # show message box to inform user
         messagebox.showinfo(title="Save Current Game", message="Current game has been saved! ")
 
-    def load_game(self):
+    def load_game(self, event=None):
         """Load the saved progress and start the game window"""
         # now read the pickle file, 'rb' open a binary file for reading
         pickle_file = open('game_data.pkl', 'rb')
@@ -267,7 +285,7 @@ class TriviaMazeGUI:
 
 
     def display_question(self):
-        # input questions from select_questions.py and put all of them into frame
+        # input questions from question.py and put all of them into frame
         num_questions_expect = 1
         questions = q.get_questions(num_questions_expect)
         # insert text label for question body and all choices associated with it
@@ -327,13 +345,16 @@ class TriviaMazeGUI:
         self.check_question_cnt += 1
         if x.get() == answer:
             # messagebox.showinfo(message="Correct! ")
-            answer = Label(self.question_frame, text='Correct!', font="Times 30", anchor=W, fg="green", )
+            answer = Label(self.question_frame, text='Correct!', font="Times 30", anchor=W, fg="green")
             answer.grid(row=2, column=1)
 
         else:
             # messagebox.showinfo(message="wrong answer! ")
-            answer = Label(self.question_frame, text='wrong answer', font="Times 30", anchor=W, fg="red",)
+            answer = Label(self.question_frame, text='Wrong Answer', font="Times 30", anchor=W, fg="red")
+            correct_answer = Label(self.question_frame, text=f"correct answer is: {q.get_answer(questions[0])}",
+                                   font="Times 30", anchor=W, fg="green")
             answer.grid(row=2, column=1)
+            correct_answer.grid(row=3, column=1)
 
 
 
@@ -345,4 +366,5 @@ class TriviaMazeGUI:
             item.destroy()
 
 if __name__ == '__main__':
+    q = Question()
     game = TriviaMazeGUI()
