@@ -53,6 +53,7 @@ def get_questions(num_questions_expect):
             questions.append(question)
 
         cur.close()
+
         return questions
     except sqlite3.Error as error:
         print("Failed to read data from table", error)

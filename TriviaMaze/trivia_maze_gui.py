@@ -1,13 +1,14 @@
-import pygame
 from maze import Maze
 from tkinter import *
 from player import Player
 from tkinter import messagebox
 import select_questions as q
-import ctypes as ct
+import pickle
 
 MAZE_ROWS = 5
 MAZE_COLS = 5
+
+
 class TriviaMazeGUI:
     def __init__(self):
         self.question_frame = None
@@ -33,7 +34,6 @@ class TriviaMazeGUI:
         self.check_question_cnt = 0
         self.root.configure(background="#222246")
 
-
         self.root.mainloop()
 
     def init_begin_menu(self):
@@ -44,13 +44,55 @@ class TriviaMazeGUI:
                                  command=lambda: self.start_game(new_game=True))
         new_game_button.grid(row=0, pady=5)
         load_game_button = Button(self.begin_window, text="Load Game", font="Verdana 20",
-                                      command=self)
+                                  command=self.load_game)
         load_game_button.grid(row=1, pady=5)
+
         instructions_button = Button(self.begin_window, text="Instructions", font="Verdana 20",
                                      command=self.instructions)
         instructions_button.grid(row=2, pady=5)
         exit_button = Button(self.begin_window, text="Exit", font="Verdana 20", command=self.exit_pressed)
         exit_button.grid(row=3, pady=5)
+
+    def about_the_game(self):
+        with open("about_message.txt") as file:
+            about_message = file.read()
+
+        about_info = messagebox.showinfo(title="About the Game", message=about_message)
+        return about_info
+
+    def exit_game(self):
+        answer = messagebox.askyesnocancel(title="Exit", message="Do you want to exit the game? ")
+        if answer:
+            return quit()
+        else:
+            return
+
+    def how_to_play(self):
+        with open("Instructions_TriviaMaze.txt") as file:
+            instruction_message = file.read()
+
+        game_info = messagebox.showinfo(title="How to Play?", message=instruction_message)
+        return game_info
+
+    def init_menubar(self):
+        # add 'File' menu bar
+        menubar = Menu(self.root)
+        self.root.config(menu=menubar)
+        fileMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
+        menubar.add_cascade(label="File", menu=fileMenu)
+        # add drop down list for File menu bar
+        fileMenu.add_command(label="Start New Game", command=self.start_new_game, font=("Arial", 10))
+        fileMenu.add_command(label="Save Current Game", command=self.save_game, font=("Arial", 10))
+        fileMenu.add_command(label="Load Last Game", command=self.load_game, font=("Arial", 10))
+        fileMenu.add_separator()
+        fileMenu.add_command(label="Exit Game", command=self.exit_game, font=("Arial", 10))
+        # add 'Help' menu bar
+        helpMenu = Menu(menubar, tearoff=0, font=("Arial", 25))
+        menubar.add_cascade(label="Help", menu=helpMenu)
+        # add drop down list for help menu bar
+        helpMenu.add_command(label="Game Instruction", command=self.how_to_play, font=("Arial", 10))
+        helpMenu.add_separator()
+        helpMenu.add_command(label="About", command=self.about_the_game, font=("Arial", 10))
 
     def start_game(self, new_game=False):
         """Start a new game window"""
@@ -69,6 +111,51 @@ class TriviaMazeGUI:
         self.question_frame.grid_propagate(0)
         self.question_frame.grid(row=1, column=0)
         self.game_window.focus_set()
+
+    def start_new_game(self):
+        self.reset_game_progress()
+        self.start_game(True)
+
+    def reset_game_progress(self):
+        self.maze = Maze(5, 5)
+        self.player = Player()
+        self.room_size = 90
+
+    def save_game(self):
+        """Save the progress of the game"""
+        # keep a list of data needed to store progress
+        current_progress = [self.player, self.maze, self.room_size]
+
+        # create a binary file for writing 'wb' called laptopstore.pkl
+        pickle_file = open('game_data.pkl', 'wb')
+
+        # pickle the nested object and write it to file
+        pickle.dump(current_progress, pickle_file)
+
+        # close the file
+        pickle_file.close()
+        # show message box to inform user
+        messagebox.showinfo(title="Save Current Game", message="Current game has been saved! ")
+
+    def load_game(self):
+        """Load the saved progress and start the game window"""
+        # now read the pickle file, 'rb' open a binary file for reading
+        pickle_file = open('game_data.pkl', 'rb')
+
+        # unpickle the nested object from the file
+        # [self.maze, self.room_size, self.player]
+        saved_data = pickle.load(pickle_file)
+
+        # close file
+        pickle_file.close()
+        # show message box to inform user
+        messagebox.showinfo(title="Load Last Game", message="Last saved game has been loaded! ")
+
+        print("Here are the unpickled player from", saved_data[0].name)
+        self.player = saved_data[0]
+        self.maze = saved_data[1]
+        self.room_size = saved_data[2]
+        self.start_game(True)
 
     def switch_screen(self, curr_frame, new_frame):
         """Switches the window between what currently displayed"""
@@ -186,8 +273,9 @@ class TriviaMazeGUI:
         if 0 <= updated_x < self.maze.rows and 0 <= updated_y < self.maze.cols:
             self.player.coordinates[0] = updated_x
             self.player.coordinates[1] = updated_y
+            # ----- testing ----------
+            # print(f"player coordinates {self.player.coordinates[0]}, {self.player.coordinates[1]}")
             self.draw_all_image()
-
 
     def display_question(self, offset_x, offset_y):
         # input questions from select_questions.py and put all of them into frame
@@ -206,7 +294,7 @@ class TriviaMazeGUI:
                                 padx=3,
                                 height=4,
                                 bd=5)
-        questions_label.grid(row=0, column=0, sticky=E+W)
+        questions_label.grid(row=0, column=0, sticky=E + W)
         radiobutton_A = Radiobutton(self.question_frame,
                                     text=f"A: {questions[0]['A']}",
                                     variable=x,
@@ -214,7 +302,7 @@ class TriviaMazeGUI:
                                     padx=5,
                                     height=2,
                                     command=lambda: self.check_answer(questions, x, offset_x, offset_y))
-        radiobutton_A.grid(row=1, column=0, sticky=E+W)
+        radiobutton_A.grid(row=1, column=0, sticky=E + W)
         radiobutton_B = Radiobutton(self.question_frame,
                                     text=f"B: {questions[0]['B']}",
                                     variable=x,
@@ -242,7 +330,6 @@ class TriviaMazeGUI:
         if questions[0]['D'] != "None":
             radiobutton_D.grid(row=4, column=0, sticky=E + W)
 
-
     def check_answer(self, questions, x, offset_x, offset_y):
         answer = q.get_answer(questions[0])
         if self.check_question_cnt > 0:
@@ -255,16 +342,14 @@ class TriviaMazeGUI:
             self.move_player(offset_x, offset_y)
         else:
             # messagebox.showinfo(message="wrong answer! ")
-            answer_result = Label(self.question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red",)
+            answer_result = Label(self.question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red", )
             answer_result.grid(row=2, column=1)
-
-
-
 
     def clear_text_display(self):
         """Clears items in the text display."""
         for item in self.question_frame.winfo_children():
             item.destroy()
+
 
 if __name__ == '__main__':
     game = TriviaMazeGUI()
