@@ -1,11 +1,11 @@
-Click "New Game" to start a new game or click "Start New Game" under File menu.
+Start a new game: click "New Game" or click "Start New Game" under File menu or press "CTRL + N".
 
-Click "Continue Gmae" to load last saved game or click "Load Last Gmae" under File menu.
+Load last game: click "Continue Gmae" or click "Load Last Gmae" under File menu or press "CTRL + L".
 
-Click "Instructions" to show game instruction or click "Game Instruction" under Help menu.
+Show game instruction: click "Instructions" or click "Game Instruction" under Help menu or press "F1".
 
-Click "Exit" to ext the game or click "Exit Gmae" under File menu.
+Exit game: click "Exit" or click "Exit Game" under File menu or press "CTRL + Q".
 
-Click "About" under Help mebu to show general information about the game.
+About: click "About" under Help menu or press "CTRL + B".
 
 Once new game starts, player will be randomly placed in a room of a maze. Maze is composed of 5x5 rooms. Player shall use "up", "down", "left" or "right" buttons to navigate themselves. Player shall choose one door to precede the game. Every movement towards a door will trigger a question which will be shown under the maze interface. In order to pass the door, the user has to answer the question correctly. Door will be closed permanently if user's answer is wrong. Right or wrong feedback will be promptly displayed after user making their choice. If no door can be selected, game will be terminated!
