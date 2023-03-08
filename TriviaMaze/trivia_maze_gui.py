@@ -2,31 +2,35 @@ from maze import Maze
 from tkinter import *
 from player import Player
 from tkinter import messagebox
-import select_questions as q
+from controller import Controller
+from questions import Questions
+import questions as q
 import pickle
+
 
 MAZE_ROWS = 5
 MAZE_COLS = 5
 
 
 class TriviaMazeGUI:
-    def __init__(self):
+    def __init__(self, controller):
+        self.controller = controller
         self.question_frame = None
-        self.maze = Maze(MAZE_ROWS, MAZE_COLS)
+        self.maze = controller.maze
         self.root = Tk()
         self.root.geometry("1028x760")
-        self.player = Player()
+        self.player = controller.player
         self.bg = PhotoImage(file="img/MonsterMaze.png")
         self.my_label = Label(self.root, image=self.bg)
         self.my_label.place(x=0, y=0)
         self.begin_window = Frame(self.root, bg="#E59866")
         self.game_window = Frame(self.root)
-        self.db = None
         self.display = None
         self.room_size = 90
         # self.root.resizable(True, True)
         self.root.title("TriviaMaze")
         self.init_begin_menu()
+        self.init_menubar()
         self.door_open_image = PhotoImage(file='img/door_exist.png')
         self.door_exist_image = PhotoImage(file='img/door_exist.png')
         self.door_close_image = PhotoImage(file='img/door_close.png')
@@ -117,9 +121,15 @@ class TriviaMazeGUI:
         self.start_game(True)
 
     def reset_game_progress(self):
-        self.maze = Maze(5, 5)
-        self.player = Player()
-        self.room_size = 90
+        # self.controller.maze = Maze(5, 5)
+        self.controller.reset_maze()
+        self.controller.reset_player()
+        # self.room_size = 90
+
+
+
+
+
 
     def save_game(self):
         """Save the progress of the game"""
@@ -263,27 +273,23 @@ class TriviaMazeGUI:
             if k == event.keysym and v[0] == "EXIST":
                 self.clear_text_display()
                 self.display_question(v[1], v[2])
-                # self.move_player(v[1], v[2])
             elif k == event.keysym and v[0] == "OPEN":
-                self.move_player(v[1], v[2])
+                self.controller.update_player_coordinates(v[1], v[2])
+                self.draw_all_image()
 
-    def move_player(self, x, y):
-        updated_x = self.player.coordinates[0] + x
-        updated_y = self.player.coordinates[1] + y
-        if 0 <= updated_x < self.maze.rows and 0 <= updated_y < self.maze.cols:
-            self.player.coordinates[0] = updated_x
-            self.player.coordinates[1] = updated_y
-            # ----- testing ----------
-            # print(f"player coordinates {self.player.coordinates[0]}, {self.player.coordinates[1]}")
-            self.draw_all_image()
+    # def move_player(self, x, y):
+    #     updated_x = self.player.coordinates[0] + x
+    #     updated_y = self.player.coordinates[1] + y
+    #     if 0 <= updated_x < self.maze.rows and 0 <= updated_y < self.maze.cols:
+    #         self.player.coordinates[0] = updated_x
+    #         self.player.coordinates[1] = updated_y
+    #         self.draw_all_image()
 
     def display_question(self, offset_x, offset_y):
-        # input questions from select_questions.py and put all of them into frame
-        num_questions_expect = 1
-        questions = q.get_questions(num_questions_expect)
+        # input questions from questions.py and put all of them into frame
+        questions = self.controller.get_questions()
         # insert text label for question body and all choices associated with it
         x = StringVar(self.question_frame, "questions[0]['A']")
-        # for i in range(len(questions)):
         self.check_question_cnt = 0
         questions_label = Label(self.question_frame,
                                 text=questions[0]["question"],
@@ -331,17 +337,16 @@ class TriviaMazeGUI:
             radiobutton_D.grid(row=4, column=0, sticky=E + W)
 
     def check_answer(self, questions, x, offset_x, offset_y):
-        answer = q.get_answer(questions[0])
+        answer = self.controller.get_answer(questions[0])
         if self.check_question_cnt > 0:
             return
         self.check_question_cnt += 1
         if x.get() == answer:
-            # messagebox.showinfo(message="Correct! ")
             answer_result = Label(self.question_frame, text='Correct!', font="Times 30", anchor=W, fg="green", )
             answer_result.grid(row=2, column=1)
-            self.move_player(offset_x, offset_y)
+            self.controller.update_player_coordinates(offset_x, offset_y)
+            self.draw_all_image()
         else:
-            # messagebox.showinfo(message="wrong answer! ")
             answer_result = Label(self.question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red", )
             answer_result.grid(row=2, column=1)
 
@@ -352,4 +357,9 @@ class TriviaMazeGUI:
 
 
 if __name__ == '__main__':
-    game = TriviaMazeGUI()
+    maze = Maze(MAZE_ROWS, MAZE_COLS)
+    player = Player("monster", 0, maze)
+    question = Questions()
+    controller = Controller(maze, player, question)
+    view = TriviaMazeGUI(controller)
+

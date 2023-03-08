@@ -1,10 +1,12 @@
 from room import Room
 
+
 class Maze:
     """
     class is used to crete/contains a maze of Rooms.
     """
-    def __init__(self, rows, cols):
+
+    def __init__(self, rows=5, cols=5):
         self.rows = rows
         self.cols = cols
         self.rooms = []
@@ -19,6 +21,9 @@ class Maze:
         :return: A 2D array of rooms.
         """
         return self.rooms
+
+    def reset_maze(self):
+        self.__init__(5, 5)
 
     def print(self):
         """
