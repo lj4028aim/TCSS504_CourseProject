@@ -1,4 +1,6 @@
 from enum import Enum
+
+
 # Enum class to list value for Doors, prevent any other values set to door
 class Door(Enum):
     EXIST = "EXIST"
@@ -6,11 +8,11 @@ class Door(Enum):
     CLOSE = "CLOSE"
 
 
-
 class Room:
     """
     room class is built to contain a default constructor and the following methods.
     """
+
     def __init__(self, row, col):
         self._exit = False
         self._entrance = False
@@ -21,7 +23,6 @@ class Room:
         self.south = Door.EXIST.value
         self.west = Door.EXIST.value
         self.east = Door.EXIST.value
-
 
     def __str__(self):
         """
@@ -40,6 +41,17 @@ class Room:
         res += "|\n" if self.east else "*\n"
         res += "* - *\n" if self.south else "*****\n"
         return res
+
+    def update_door_state(self, direction, doorstate):
+        if direction == "Left":
+            self.west = doorstate
+        elif direction == "Right":
+            self.east = doorstate
+        elif direction == "Up":
+            self.north = doorstate
+        elif direction == "Down":
+            self.south = doorstate
+
 
     def get_exit(self):
         """

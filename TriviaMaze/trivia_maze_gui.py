@@ -4,22 +4,16 @@ from player import Player
 from tkinter import messagebox
 from controller import Controller
 from questions import Questions
-import questions as q
+from room import Door
 import pickle
-
-
-MAZE_ROWS = 5
-MAZE_COLS = 5
 
 
 class TriviaMazeGUI:
     def __init__(self, controller):
         self.controller = controller
         self.question_frame = None
-        self.maze = controller.maze
         self.root = Tk()
         self.root.geometry("1028x760")
-        self.player = controller.player
         self.bg = PhotoImage(file="img/MonsterMaze.png")
         self.my_label = Label(self.root, image=self.bg)
         self.my_label.place(x=0, y=0)
@@ -31,11 +25,12 @@ class TriviaMazeGUI:
         self.root.title("TriviaMaze")
         self.init_begin_menu()
         self.init_menubar()
-        self.door_open_image = PhotoImage(file='img/door_exist.png')
+        self.door_open_image = PhotoImage(file='img/door_open.png')
         self.door_exist_image = PhotoImage(file='img/door_exist.png')
         self.door_close_image = PhotoImage(file='img/door_close.png')
         self.player_image = PhotoImage(file="img/player.png")
-        self.check_question_cnt = 0
+        self.checked_answer = False
+        self.display_question_token = True
         self.root.configure(background="#222246")
 
         self.root.mainloop()
@@ -118,23 +113,17 @@ class TriviaMazeGUI:
 
     def start_new_game(self):
         self.reset_game_progress()
+        self.display_question_token = True
         self.start_game(True)
 
     def reset_game_progress(self):
-        # self.controller.maze = Maze(5, 5)
         self.controller.reset_maze()
         self.controller.reset_player()
-        # self.room_size = 90
-
-
-
-
-
 
     def save_game(self):
         """Save the progress of the game"""
         # keep a list of data needed to store progress
-        current_progress = [self.player, self.maze, self.room_size]
+        current_progress = [self.controller.player, self.controller.maze, self.room_size]
 
         # create a binary file for writing 'wb' called laptopstore.pkl
         pickle_file = open('game_data.pkl', 'wb')
@@ -153,7 +142,7 @@ class TriviaMazeGUI:
         pickle_file = open('game_data.pkl', 'rb')
 
         # unpickle the nested object from the file
-        # [self.maze, self.room_size, self.player]
+        # [self.controller.maze, self.room_size, self.controller.player]
         saved_data = pickle.load(pickle_file)
 
         # close file
@@ -162,8 +151,8 @@ class TriviaMazeGUI:
         messagebox.showinfo(title="Load Last Game", message="Last saved game has been loaded! ")
 
         print("Here are the unpickled player from", saved_data[0].name)
-        self.player = saved_data[0]
-        self.maze = saved_data[1]
+        self.controller.player = saved_data[0]
+        self.controller.maze = saved_data[1]
         self.room_size = saved_data[2]
         self.start_game(True)
 
@@ -178,46 +167,45 @@ class TriviaMazeGUI:
                                       self.room_size * (row + 1) - 5, fill='pink', outline="")
 
     def draw_doors(self, row, col):
-        rooms = self.maze.get_room()
+        rooms = self.controller.maze.get_room()
         direction = ["north", "south", "east", "west"]
         door_state_map = {"north": rooms[row][col].north, "south": rooms[row][col].south, "east": rooms[row][col].east,
                           "west": rooms[row][col].west}
         for dic in direction:
-            if (row == 0 and dic == "east") or (row == self.maze.cols - 1 and dic == "west") or (
-                    col == 0 and dic == "north") or (col == self.maze.rows - 1 and dic == "south"):
+            if (col == 0 and dic == "west") or (col == self.controller.maze.cols - 1 and dic == "east") or (
+                    row == 0 and dic == "north") or (row == self.controller.maze.rows - 1 and dic == "south"):
                 continue
             self.draw_door_state(door_state_map[dic], row, col, dic)
 
     def draw_door_state(self, door_state, row, col, direction):
-        offset_dict = {"north": [0.5, 0], "south": [0.5, 1], "east": [0, 0.5], "west": [1, 0.5]}
+        offset_dict = {"north": [0.5, 0], "south": [0.5, 1], "east": [1, 0.5], "west": [0, 0.5]}
         if door_state == "OPEN":
-            self.display.create_image(self.room_size * row + self.room_size * offset_dict[direction][0],
-                                      self.room_size * col + self.room_size * offset_dict[direction][1],
+            self.display.create_image(self.room_size * col + self.room_size * offset_dict[direction][0],
+                                      self.room_size * row + self.room_size * offset_dict[direction][1],
                                       image=self.door_open_image, anchor="center")
         if door_state == "CLOSE":
-            self.display.create_image(self.room_size * row + self.room_size * offset_dict[direction][0],
-                                      self.room_size * col + self.room_size * offset_dict[direction][1],
+            self.display.create_image(self.room_size * col + self.room_size * offset_dict[direction][0],
+                                      self.room_size * row + self.room_size * offset_dict[direction][1],
                                       image=self.door_close_image, anchor="center")
         if door_state == "EXIST":
-            self.display.create_image(self.room_size * row + self.room_size * offset_dict[direction][0],
-                                      self.room_size * col + self.room_size * offset_dict[direction][1],
+            self.display.create_image(self.room_size * col + self.room_size * offset_dict[direction][0],
+                                      self.room_size * row + self.room_size * offset_dict[direction][1],
                                       image=self.door_exist_image, anchor="center")
 
     def draw_all_room(self):
-        for i in range(self.maze.rows):
-            for j in range(self.maze.cols):
+        for i in range(self.controller.maze.cols):
+            for j in range(self.controller.maze.cols):
                 self.draw_cell(i, j)
 
     def draw_all_doors(self):
-        for i in range(self.maze.rows):
-            for j in range(self.maze.cols):
+        for i in range(self.controller.maze.cols):
+            for j in range(self.controller.maze.cols):
                 self.draw_doors(i, j)
 
     def draw_player(self):
-        location = self.player.coordinates
+        location = self.controller.player.coordinates
         row, col = location[0], location[1]
         offset = self.room_size // 2.5
-        # offset = 0
         self.display.create_image(90 * col + offset, 90 * row + offset, image=self.player_image)
 
     def draw_all_image(self):
@@ -262,35 +250,28 @@ class TriviaMazeGUI:
         Method to move the player and display the question according to door state
         :return: none
         """
-        room = self.maze.get_room()
-        cur_row = self.player.coordinates[0]
-        cur_col = self.player.coordinates[1]
+        room = self.controller.maze.get_room()
+        cur_row = self.controller.player.coordinates[0]
+        cur_col = self.controller.player.coordinates[1]
         door_dir = {"Left": [room[cur_row][cur_col].west, 0, -1],
                     "Right": [room[cur_row][cur_col].east, 0, 1],
                     "Up": [room[cur_row][cur_col].north, -1, 0],
                     "Down": [room[cur_row][cur_col].south, 1, 0]}
         for k, v in door_dir.items():
-            if k == event.keysym and v[0] == "EXIST":
+            if k == event.keysym and v[0] == "EXIST" and self.display_question_token:
                 self.clear_text_display()
-                self.display_question(v[1], v[2])
+                self.display_question(v[1], v[2], k)
             elif k == event.keysym and v[0] == "OPEN":
                 self.controller.update_player_coordinates(v[1], v[2])
                 self.draw_all_image()
 
-    # def move_player(self, x, y):
-    #     updated_x = self.player.coordinates[0] + x
-    #     updated_y = self.player.coordinates[1] + y
-    #     if 0 <= updated_x < self.maze.rows and 0 <= updated_y < self.maze.cols:
-    #         self.player.coordinates[0] = updated_x
-    #         self.player.coordinates[1] = updated_y
-    #         self.draw_all_image()
-
-    def display_question(self, offset_x, offset_y):
+    def display_question(self, offset_x, offset_y, direction):
         # input questions from questions.py and put all of them into frame
         questions = self.controller.get_questions()
+        self.display_question_token = False
         # insert text label for question body and all choices associated with it
         x = StringVar(self.question_frame, "questions[0]['A']")
-        self.check_question_cnt = 0
+        self.checked_answer = False
         questions_label = Label(self.question_frame,
                                 text=questions[0]["question"],
                                 wraplength=500,
@@ -301,54 +282,58 @@ class TriviaMazeGUI:
                                 height=4,
                                 bd=5)
         questions_label.grid(row=0, column=0, sticky=E + W)
-        radiobutton_A = Radiobutton(self.question_frame,
+        radiobutton_a = Radiobutton(self.question_frame,
                                     text=f"A: {questions[0]['A']}",
                                     variable=x,
                                     value=questions[0]['A'],
                                     padx=5,
                                     height=2,
-                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y))
-        radiobutton_A.grid(row=1, column=0, sticky=E + W)
-        radiobutton_B = Radiobutton(self.question_frame,
+                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y, direction))
+        radiobutton_a.grid(row=1, column=0, sticky=E + W)
+        radiobutton_b = Radiobutton(self.question_frame,
                                     text=f"B: {questions[0]['B']}",
                                     variable=x,
                                     value=questions[0]['B'],
                                     padx=5,
                                     height=2,
-                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y))
-        radiobutton_B.grid(row=2, column=0, sticky=E + W)
-        radiobutton_C = Radiobutton(self.question_frame,
+                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y, direction))
+        radiobutton_b.grid(row=2, column=0, sticky=E + W)
+        radiobutton_c = Radiobutton(self.question_frame,
                                     text=f"C: {questions[0]['C']}",
                                     variable=x,
                                     value=questions[0]['C'],
                                     padx=5,
                                     height=2,
-                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y))
+                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y, direction))
         if questions[0]['C'] != "None":
-            radiobutton_C.grid(row=3, column=0, sticky=E + W)
-        radiobutton_D = Radiobutton(self.question_frame,
+            radiobutton_c.grid(row=3, column=0, sticky=E + W)
+        radiobutton_d = Radiobutton(self.question_frame,
                                     text=f"D: {questions[0]['D']}",
                                     variable=x,
                                     value=questions[0]['D'],
                                     padx=5,
                                     height=2,
-                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y))
+                                    command=lambda: self.check_answer(questions, x, offset_x, offset_y, direction))
         if questions[0]['D'] != "None":
-            radiobutton_D.grid(row=4, column=0, sticky=E + W)
+            radiobutton_d.grid(row=4, column=0, sticky=E + W)
 
-    def check_answer(self, questions, x, offset_x, offset_y):
+    def check_answer(self, questions, x, offset_x, offset_y, direction):
         answer = self.controller.get_answer(questions[0])
-        if self.check_question_cnt > 0:
+        self.display_question_token = True
+        if self.checked_answer:
             return
-        self.check_question_cnt += 1
+        self.checked_answer = True
         if x.get() == answer:
-            answer_result = Label(self.question_frame, text='Correct!', font="Times 30", anchor=W, fg="green", )
+            answer_result = Label(self.question_frame, text='Correct!', font="Times 30", anchor=W, fg="green")
             answer_result.grid(row=2, column=1)
+            self.controller.update_doorstate(offset_x, offset_y, direction, Door.OPEN.value)
             self.controller.update_player_coordinates(offset_x, offset_y)
             self.draw_all_image()
         else:
-            answer_result = Label(self.question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red", )
+            answer_result = Label(self.question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red")
+            self.controller.update_doorstate(offset_x, offset_y, direction, Door.CLOSE.value)
             answer_result.grid(row=2, column=1)
+            self.draw_all_image()
 
     def clear_text_display(self):
         """Clears items in the text display."""
@@ -357,9 +342,8 @@ class TriviaMazeGUI:
 
 
 if __name__ == '__main__':
-    maze = Maze(MAZE_ROWS, MAZE_COLS)
-    player = Player("monster", 0, maze)
+    maze = Maze()
+    player = Player(maze)
     question = Questions()
     controller = Controller(maze, player, question)
     view = TriviaMazeGUI(controller)
-

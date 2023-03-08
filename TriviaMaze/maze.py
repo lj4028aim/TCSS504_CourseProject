@@ -23,7 +23,7 @@ class Maze:
         return self.rooms
 
     def reset_maze(self):
-        self.__init__(5, 5)
+        self.__init__
 
     def print(self):
         """

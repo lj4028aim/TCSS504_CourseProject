@@ -1,6 +1,9 @@
+from maze import Maze
+
+
 class Player:
 
-    def __init__(self, name="monster", golden_key=0, maze=None):
+    def __init__(self, maze, name="monster", golden_key=0):
         self.name = name
         self.maze = maze
         self.coordinates = [1, 1]
@@ -15,8 +18,8 @@ class Player:
             self.coordinates[1] = updated_y
 
     def reset_player_coordinates(self):
-        self.coordinates[0] = 1
-        self.coordinates[1] = 1
+        maze = Maze()
+        self.__init__(maze)
 
     def get_name(self):
         pass
