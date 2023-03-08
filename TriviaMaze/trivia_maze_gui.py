@@ -34,6 +34,8 @@ class TriviaMazeGUI:
         self.player_image = PhotoImage(file="img/player.png")
         self.check_question_cnt = 0
 
+        self.menu_frame = None
+
         self.root.mainloop()
 
     def init_begin_menu(self):
@@ -92,7 +94,7 @@ class TriviaMazeGUI:
         fileMenu.add_command(label="Start New Game",
                              accelerator="CTRL + N",
                              font=("Arial", 10),
-                             command=lambda: self.start_new_game)
+                             command=self.start_new_game)
         fileMenu.add_command(label="Save Current Game",
                              accelerator="CTRL + S",
                              font=("Arial", 10),
@@ -133,19 +135,27 @@ class TriviaMazeGUI:
             self.switch_screen(self.begin_window, self.game_window)
         for item in self.game_window.winfo_children():
             item.destroy()
+
+        self.menu_frame = Frame(self.game_window, height=500, width=1028)
+        self.menu_frame.grid(row=0, column=0)
+        self.game_window_menu()
+
         self.display = Canvas(self.game_window, height=500, width=1028, bg="black")
         self.draw_all_image()
-        self.display.grid(row=0, column=0, rowspan= 1, columnspan=1)
+        self.display.grid(row=1, column=0, rowspan= 1, columnspan=1)
+
         self.root.bind("<Left>", self.on_arrow_key)
         self.root.bind("<Right>", self.on_arrow_key)
         self.root.bind("<Up>", self.on_arrow_key)
         self.root.bind("<Down>", self.on_arrow_key)
+
         self.question_frame = Frame(self.game_window, height=500, width=1028)
         self.question_frame.grid_propagate(0)
-        self.question_frame.grid(row=1, column=0)
+        self.question_frame.grid(row=2, column=0)
+        
         self.game_window.focus_set()
 
-    def start_new_game(self, event=None):
+    def start_new_game(self):
         self.reset_game_progress()
         self.start_game(True)
 
@@ -154,14 +164,43 @@ class TriviaMazeGUI:
         self.player = Player()
         self.room_size = 90
 
-    def game_window_button(self):
-        new_game_button_1 = Button(self.game_window,
+    def game_window_menu(self):
+        new_game_button = Button(self.menu_frame,
                                    text="New Game",
                                    font="Verdana 10",
                                    fg="#00FF00",
-                                   bg="green")
-        new_game_button_1.pack()
-        new_game_button_1.grid(row=1500, column=1500)
+                                   bg="green",
+                                   command=self.start_new_game)
+        save_button = Button(self.menu_frame,
+                             text="Save Game",
+                             font="Verdana 10",
+                             fg="#00FF00",
+                             bg="green",
+                             command=self.save_game)
+        load_button = Button(self.menu_frame,
+                                   text="Load Game",
+                                   font="Verdana 10",
+                                   fg="#00FF00",
+                                   bg="green",
+                                   command = self.load_game)
+        help_button = Button(self.menu_frame,
+                                   text="Help",
+                                   font="Verdana 10",
+                                   fg="#00FF00",
+                                   bg="green",
+                                   command=self.about_the_game)
+        exit_button = Button(self.menu_frame,
+                                   text="Exit",
+                                   font="Verdana 10",
+                                   fg="#00FF00",
+                                   bg="green",
+                                   command=self.exit_game)
+        new_game_button.pack()
+        new_game_button.grid(row=0, column=0)
+        save_button.grid(row=0, column=1)
+        load_button.grid(row=0, column=2)
+        help_button.grid(row=0, column=3)
+        exit_button.grid(row=0, column=4)
 
     def save_game(self, event=None):
         """Save the progress of the game"""
