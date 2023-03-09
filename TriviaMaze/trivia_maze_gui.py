@@ -9,7 +9,16 @@ import pickle
 
 
 class TriviaMazeGUI:
+    """
+    A graphical user interface (GUI) for trivia maze using tkinter.
+
+    All questions used are read and stored in SQLite database. Player's current state could be saved and
+    re-loaded by implementing 'pickling'.
+    """
     def __init__(self):
+        """
+        Initialize a 'TriviaMazeGUI' object; add and make GUI objects.
+        """
         self.question_frame = None
         self.maze = Maze(5, 5)
         self.root = Tk()
@@ -39,8 +48,10 @@ class TriviaMazeGUI:
         self.root.mainloop()
 
     def init_begin_menu(self):
-        """Initiate the beginning menu for the game. Show buttons to start a new game, load the game, show instructions and
-         exit the program"""
+        """
+        Initiate the beginning menu for the game. Show buttons to start a new game, load the game, display instructions
+        and exit the program.
+        """
         self.begin_window.place(x=430, y=500)
         new_game_button = Button(self.begin_window,
                                  text="New Game",
@@ -64,6 +75,10 @@ class TriviaMazeGUI:
         exit_button.grid(row=3, pady=5)
 
     def about_the_game(self, event=None):
+        """
+        Return information of 'About' under 'Help' menu bar.
+        :param event: used for setting up shortcut key.
+        """
         with open("about_message.txt") as file:
             about_message = file.read()
 
@@ -71,6 +86,10 @@ class TriviaMazeGUI:
         return about_info
 
     def exit_game(self, event=None):
+        """
+        Handle command exit.
+        :param event: used for setting up shortcut key.
+        """
         answer = messagebox.askyesnocancel(title="Exit", message="Do you want to exit the game? ")
         if answer:
             return quit()
@@ -78,6 +97,10 @@ class TriviaMazeGUI:
             return
 
     def how_to_play(self, event=None):
+        """
+        Return game instruction information.
+        :param event: used for setting up shortcut key.
+        """
         with open("Instructions_TriviaMaze.txt") as file:
             instruction_message = file.read()
 
@@ -85,6 +108,7 @@ class TriviaMazeGUI:
         return game_info
 
     def init_menubar(self):
+        """Initiate menubar of 'File' and 'Help' tabs."""
         # add 'File' menu bar
         menubar = Menu(self.root)
         self.root.config(menu=menubar)
@@ -156,15 +180,21 @@ class TriviaMazeGUI:
         self.game_window.focus_set()
 
     def start_new_game(self):
+        """Reset game progress and start a new game."""
         self.reset_game_progress()
         self.start_game(True)
 
     def reset_game_progress(self):
+        """ Reset game progress. """
         self.maze = Maze(5, 5)
         self.player = Player()
         self.room_size = 90
 
     def game_window_menu(self):
+        """
+        Set buttons to start a new game, save current game, load last save game, and access help information
+        in game window.
+        """
         new_game_button = Button(self.menu_frame,
                                    text="New Game",
                                    font="Verdana 10",
@@ -251,7 +281,9 @@ class TriviaMazeGUI:
     def draw_doors(self, row, col):
         room = self.maze.get_room()
         direction = ["north", "south", "east", "west"]
-        door_state_map = {"north": room[row][col].north, "south": room[row][col].south, "east": room[row][col].east,
+        door_state_map = {"north": room[row][col].north,
+                          "south": room[row][col].south,
+                          "east": room[row][col].east,
                           "west": room[row][col].west}
         for dic in direction:
             if (row == 0 and dic == "east") or (row == self.maze.cols - 1 and dic == "west") or (
@@ -275,16 +307,19 @@ class TriviaMazeGUI:
                                       image=self.door_exist_image, anchor="center")
 
     def draw_all_room(self):
+        """Display all rooms' image in game window."""
         for i in range(self.maze.rows):
             for j in range(self.maze.cols):
                 self.draw_cell(i, j)
 
     def draw_all_doors(self):
+        """Display doors' image in game window."""
         for i in range(self.maze.rows):
             for j in range(self.maze.cols):
                 self.draw_doors(i, j)
 
     def draw_player(self):
+        """Display player's image in game window."""
         location = self.player.coordinates
         row, col = location[0], location[1]
         offset = self.room_size // 2.5
@@ -292,11 +327,13 @@ class TriviaMazeGUI:
         self.display.create_image(90 * col + offset, 90 * row + offset, image=self.player_image)
 
     def draw_all_image(self):
+        """Display all images for room, door, and player."""
         self.draw_all_room()
         self.draw_all_doors()
         self.draw_player()
 
     def instructions(self):
+        """Return game instruction information."""
         instruction_frame = Frame(self.root, height=1000, width=800)
         instruction_file = open("Instructions_TriviaMaze.txt", 'r')
         instruction_text = instruction_file.read()
@@ -311,6 +348,7 @@ class TriviaMazeGUI:
         back_button.grid(row=1, column=0)
 
     def exit_pressed(self):
+        """Display message box asking user wants to exti game."""
         pop = Toplevel()
         pop.title("Exit")
         pop.geometry("250x150")
@@ -329,6 +367,7 @@ class TriviaMazeGUI:
         no.grid(row=0, column=2, padx=10)
 
     def on_arrow_key(self, event):
+        """Ensure player can maneuver themselves by using 'Left', 'Right', 'Up', and 'Down' keys on keyboard."""
         room = self.maze.get_room()
         cur_row = self.player.coordinates[0]
         cur_col = self.player.coordinates[1]
@@ -346,6 +385,7 @@ class TriviaMazeGUI:
                 self.move_player(v[1], v[2])
 
     def move_player(self, x, y):
+        """Ensure player could move around in maze."""
         updated_x = self.player.coordinates[0] + x
         updated_y = self.player.coordinates[1] + y
         if 0 <= updated_x < self.maze.rows and 0 <= updated_y < self.maze.cols:
@@ -357,6 +397,7 @@ class TriviaMazeGUI:
 
 
     def display_question(self):
+        """Display questions when player hit a door."""
         # input questions from question.py and put all of them into frame
         num_questions_expect = 1
         questions = q.get_questions(num_questions_expect)
@@ -411,6 +452,10 @@ class TriviaMazeGUI:
 
 
     def check_answer(self, questions, x):
+        """
+        Check player's answer with correct answer. Displaying correct answer if their answer is wrong,
+        'Correct' otherwise.
+        """
         answer = q.get_answer(questions[0])
         if self.check_question_cnt > 0:
             return
@@ -427,10 +472,6 @@ class TriviaMazeGUI:
                                    font="Times 30", anchor=W, fg="green")
             answer.grid(row=2, column=1)
             correct_answer.grid(row=3, column=1)
-
-
-
-
 
     def clear_text_display(self):
         """Clears items in the text display."""
