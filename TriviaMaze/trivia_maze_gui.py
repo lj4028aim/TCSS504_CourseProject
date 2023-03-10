@@ -160,8 +160,8 @@ class TriviaMazeGUI:
         for item in self.game_window.winfo_children():
             item.destroy()
 
-        self.menu_frame = Frame(self.game_window, height=500, width=1028)
-        self.menu_frame.grid(row=0, column=0)
+        self.menu_frame = Frame(self.game_window, height=500, width=1028, bg="black")
+        self.menu_frame.grid(row=0, column=0, sticky=W)
         self.game_window_menu()
 
         self.display = Canvas(self.game_window, height=500, width=1028, bg="black")
@@ -198,34 +198,24 @@ class TriviaMazeGUI:
         new_game_button = Button(self.menu_frame,
                                    text="New Game",
                                    font="Verdana 10",
-                                   fg="#00FF00",
-                                   bg="green",
                                    command=self.start_new_game)
         save_button = Button(self.menu_frame,
                              text="Save Game",
                              font="Verdana 10",
-                             fg="#00FF00",
-                             bg="green",
                              command=self.save_game)
         load_button = Button(self.menu_frame,
                                    text="Load Game",
                                    font="Verdana 10",
-                                   fg="#00FF00",
-                                   bg="green",
                                    command = self.load_game)
         help_button = Button(self.menu_frame,
                                    text="Help",
                                    font="Verdana 10",
-                                   fg="#00FF00",
-                                   bg="green",
                                    command=self.about_the_game)
         exit_button = Button(self.menu_frame,
                                    text="Exit",
                                    font="Verdana 10",
-                                   fg="#00FF00",
-                                   bg="green",
                                    command=self.exit_game)
-        new_game_button.pack()
+        # new_game_button.pack()
         new_game_button.grid(row=0, column=0)
         save_button.grid(row=0, column=1)
         load_button.grid(row=0, column=2)
