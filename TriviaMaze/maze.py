@@ -23,7 +23,9 @@ class Maze:
         return self.rooms
 
     def reset_maze(self):
-        self.__init__
+        for i in range(self.rows):
+            for j in range(self.cols):
+                self.rooms[i][j].reset_room()
 
     def print(self):
         """

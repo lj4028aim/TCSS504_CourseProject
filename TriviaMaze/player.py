@@ -19,7 +19,7 @@ class Player:
 
     def reset_player_coordinates(self):
         maze = Maze()
-        self.__init__(maze)
+        return self.__init__(maze)
 
     def get_name(self):
         pass

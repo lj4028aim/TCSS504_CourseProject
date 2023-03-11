@@ -33,7 +33,7 @@ class Controller:
         self.maze.reset_maze()
 
     def reset_player(self):
-        self.player.reset_player_coordinates()
+        return self.player.reset_player_coordinates()
 
 
 

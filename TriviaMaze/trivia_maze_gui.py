@@ -115,6 +115,12 @@ class TriviaMazeGUI:
         self.reset_game_progress()
         self.display_question_token = True
         self.start_game(True)
+        self.draw_all_image()
+        # maze = Maze()
+        # player = Player(maze)
+        # question = Questions()
+        # self.controller = Controller(maze, player, question)
+
 
     def reset_game_progress(self):
         self.controller.reset_maze()

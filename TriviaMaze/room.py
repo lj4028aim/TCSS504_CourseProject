@@ -52,6 +52,14 @@ class Room:
         elif direction == "Down":
             self.south = doorstate
 
+    def reset_room(self):
+        self._exit = False
+        self._entrance = False
+        self._visited = False
+        self.north = Door.EXIST.value
+        self.south = Door.EXIST.value
+        self.west = Door.EXIST.value
+        self.east = Door.EXIST.value
 
     def get_exit(self):
         """
