@@ -1,4 +1,4 @@
-from room import Room
+from room import Room, Door
 
 
 class Maze:
@@ -7,115 +7,81 @@ class Maze:
     """
 
     def __init__(self, rows=5, cols=5):
-        self.rows = rows
-        self.cols = cols
-        self.rooms = []
+        self._rows = rows
+        self._cols = cols
+        self.__rooms = []
         for i in range(rows):
-            self.rooms.append([])
+            self.__rooms.append([])
             for j in range(cols):
-                self.rooms[i].append(Room(i, j))
+                self.__rooms[i].append(Room(i, j))
+        self.set_edge_room_door_close(self.__rooms)
+        self.__rooms[rows - 1][cols - 1].set_exit(True)
 
-    def get_room(self):
+    @property
+    def rooms(self):
         """
         Method is used to get room.
         :return: A 2D array of rooms.
         """
-        return self.rooms
+        return self.__rooms
 
     def reset_maze(self):
-        for i in range(self.rows):
-            for j in range(self.cols):
-                self.rooms[i][j].reset_room()
+        for i in range(self._rows):
+            for j in range(self._cols):
+                self.__rooms[i][j].reset_room()
+        self.set_edge_room_door_close(self.__rooms)
+        self.__rooms[self._rows - 1][self._cols - 1].set_exit(True)
 
-    def print(self):
-        """
-        Method is used to print out the room.
-        :return: Visualization of rooms.
-        """
-        for row in range(self.rows):
-            for col in range(self.cols):
-                print(self.rooms[row][col], sep=' ', end="")
-            print()
+    def set_edge_room_door_close(self, room):
+        for row in range(self._rows):
+            for col in range(self._cols):
+                if row == 0:
+                    room[row][col].north = Door.CLOSE.value
+                if row == self._rows - 1:
+                    room[row][col].south = Door.CLOSE.value
+                if col == 0:
+                    room[row][col].west = Door.CLOSE.value
+                if col == self._cols - 1:
+                    room[row][col].east = Door.CLOSE.value
 
-    def draw(self):
-        """
-        Method is used to draw the room by calling draw_top, draw_middle, and draw_bottom methods in Room class.
-        :return:
-        """
-        for row in range(self.rows):
-            for col in range(self.cols):
-                self.rooms[row][col].draw_top()
-            print()
-            for col in range(self.cols):
-                self.rooms[row][col].draw_middle()
-            print()
-            for col in range(self.cols):
-                self.rooms[row][col].draw_bottom()
-            print()
-
-    def get_neighbors(self, current, visited):
-        """
-        Method is used to get neighbors.
-        :param current: Current room the user in.
-        :param visited: Room user has already visited.
-        :return: neighbors
-        """
-        neighbors = []
-        if current.row > 0 and not self.rooms[current.row - 1][current.col] in visited:  # check if we can go north
-            neighbors.append(self.rooms[current.row - 1][current.col])
-        if current.row < self.rows - 1 and not self.rooms[current.row + 1][
-                                                   current.col] in visited:  # check if we can go south
-            neighbors.append(self.rooms[current.row + 1][current.col])
-        if current.col > 0 and not self.rooms[current.row][current.col - 1] in visited:  # check if we can go west
-            neighbors.append(self.rooms[current.row][current.col - 1])
-        if current.col < self.cols - 1 and not self.rooms[current.row][
-                                                   current.col + 1] in visited:  # check if we can go south
-            neighbors.append(self.rooms[current.row][current.col + 1])
-        return neighbors
-
-    def create_doors(self, current, neighbor):
-        """
-        Method is used to create doors for users.
-        :param current: current room user is in.
-        :param neighbor: neighbor around the user.
-        :return: possible doors for users.
-        """
-        if neighbor.col - current.col > 0:
-            current.east = True
-            neighbor.west = True
-        elif neighbor.col - current.col < 0:
-            current.west = True
-            neighbor.east = True
-        elif neighbor.row - current.row > 0:
-            current.south = True
-            neighbor.north = True
-        elif neighbor.row - current.row < 0:
-            current.north = True
-            neighbor.south = True
-
-    def generate(self):
-        """
-        Method is used to
-        :return:
-        """
-        source = self.rooms[0][0]
-        target = self.rooms[self.rows - 1][self.cols - 1]
-        stack = []
+    def is_exit_reachable(self, x, y):
         visited = []
-        stack.append(source)
-        visited.append(source)
-        while len(stack) != 0:
-            current = stack[-1]
-            # find all neighbors of the current vertex
-            # make sure that they are not visited
-            neighbors = self.get_neighbors(current, visited)
-            # print(current, neighbors)
-            if len(neighbors) != 0:
-                # pick a random neighbor to move
-                neighbor = random.choice(neighbors)
-                visited.append(neighbor)
-                stack.append(neighbor)
-                # make doors at this point
-                self.create_doors(current, neighbor)
+        return self.check_traversal(x, y, visited)
+
+    def check_traversal(self, row, col, visited):
+        """Checks if it is possible to reach the exit """
+        found_path = False
+        if self.__rooms[row][col] not in visited:
+            visited.append(self.__rooms[row][col])
+            if self.__rooms[row][col].get_exit():
+                found_path = True
             else:
-                stack.pop()
+                if not found_path and self.check_direction(row, col, "north"):
+                    found_path = self.check_traversal(row - 1, col, visited)
+                if not found_path and self.check_direction(row, col, "west"):
+                    found_path = self.check_traversal(row, col - 1, visited)
+                if not found_path and self.check_direction(row, col, "south"):
+                    found_path = self.check_traversal(row + 1, col, visited)
+                if not found_path and self.check_direction(row, col, "east"):
+                    found_path = self.check_traversal(row, col + 1, visited)
+        return found_path
+
+    def check_direction(self, row, col, direction):
+        rooms = self.rooms
+        door_state_map = {"north": rooms[row][col].north, "south": rooms[row][col].south, "east": rooms[row][col].east,
+                          "west": rooms[row][col].west}
+        if self.is_neighbour_exist(row, col, direction) and (door_state_map[direction] == "EXIST" or door_state_map[
+            direction] == "OPEN"):
+            return True
+        return False
+
+    def is_neighbour_exist(self, row, col, direction):
+        offset = {"north": [-1, 0], "south": [1, 0], "east": [0, 1], "west": [0, -1]}
+        row += offset[direction][0]
+        col += offset[direction][1]
+        if 0 <= row < self._rows and 0 <= col < self._cols:
+            return True
+        return False
+
+
+
