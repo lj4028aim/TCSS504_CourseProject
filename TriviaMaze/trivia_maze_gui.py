@@ -13,7 +13,7 @@ class TriviaMazeGUI:
         self._controller = controller
         self._question_frame = None
         self._root = Tk()
-        self._root.geometry("1028x800")
+        self._root.geometry("1028x790")
         self._bg = PhotoImage(file="img/MonsterMaze.png")
         self._my_label = Label(self._root, image=self._bg)
         self._my_label.place(x=0, y=0)
@@ -310,7 +310,7 @@ class TriviaMazeGUI:
         instruction_text = instruction_file.read()
 
         instruction_frame.grid()
-        file = Text(instruction_frame, wrap="word", font="Verdana 20", height=30, width=80)
+        file = Text(instruction_frame, wrap="word", font="Verdana 20", height=31, width=80)
         file.grid(row=0, column=0)
         file.insert("1.0", instruction_text)
         instruction_file.close()
