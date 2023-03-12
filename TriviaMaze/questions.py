@@ -3,16 +3,24 @@ from sqlite3 import Error
 import random
 import os
 
-# the relative file path
-path = 'db/TriviaMaze.db'
-
-# get the path to the directory this script is in
-script_dir = os.path.dirname(__file__)
-# add the relative path to the database file from there
-db_path = os.path.join(script_dir, path)
-
 
 class Questions:
+
+    def __init__(self):
+        self.question = []
+        self.answer = []
+
+    def get_db_path(self):
+        # the relative file path
+        path = 'db/TriviaMaze.db'
+
+        # get the path to the directory this script is in
+        scriptdir = os.path.dirname(__file__)
+        # add the relative path to the database file from there
+        db_path = os.path.join(scriptdir, path)
+
+        return db_path
+
     def create_connection(self, db_file):
         """
         create a database connection to the SQLite database specified by the db_file
@@ -35,11 +43,12 @@ class Questions:
         :return: a list which hold all questions. Each question and its associated answers is in dictionary format.
         """
         try:
+            db_path = self.get_db_path()
             conn = self.create_connection(db_path)
 
             cur = conn.cursor()
             cur.execute("SELECT *  FROM Questions")
-            rows = cur.fetchmany(1)
+            rows = cur.fetchmany(200)
 
             questions = []
             num_questions = self.gen_num_questions(num_questions_expect)
@@ -93,13 +102,13 @@ class Questions:
 
 
 if __name__ == "__main__":
-    pass
-    # num_questions_expect = 200
-    # q = get_questions(num_questions_expect)
-    # num_questions = len(gen_num_questions(num_questions_expect))
-    # print(f"There are totally {num_questions} questions selected: \n")
-    #
-    # for i in range(len(q)):
-    #     print(f"{q[i]['question']}")
-    #     print(f"A: {q[i]['A']}, B: {q[i]['B']}, C: {q[i]['C']}, D: {q[i]['D']}")
-    #     print(f"correct answer: {get_answer(q[i])}\n")
+    q = Questions()
+    num_questions_expect = 1
+    questions = q.get_questions(num_questions_expect)
+    num_questions = len(q.gen_num_questions(num_questions_expect))
+    print(f"There are totally {num_questions} questions selected: \n")
+
+    for i in range(len(questions)):
+        print(f"{questions[i]['question']}")
+        print(f"A: {questions[i]['A']}, B: {questions[i]['B']}, C: {questions[i]['C']}, D: {questions[i]['D']}")
+        print(f"correct answer: {q.get_answer(questions[i])}\n")
