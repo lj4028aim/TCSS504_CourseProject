@@ -35,13 +35,37 @@ class Player:
         :param golden_key: number of golden keys
         """
         self.golden_key = int(golden_key)
+        if self.golden_key > 0:
+            self.set_is_golden_key(True)
+        else:
+            self.self.set_is_golden_key(False)
 
-    def get_is_golden_key(self):
+    def reduce_golden_key(self):
+        """
+        Reduces the amount of golden keys by 1
+        """
+        self.golden_key = max(self.golden_key-1, 0)
+        if self.golden_key > 0:
+            self.set_is_golden_key(True)
+        else:
+            self.self.set_is_golden_key(False)
+
+    # def get_is_golden_key(self):
+    #     """
+    #     Returns true when there is a golden key
+    #     :return: True if there is a golden key
+    #     """
+    #     return self.is_golden_key
+
+    def has_golden_key(self):
         """
         Returns true when there is a golden key
         :return: True if there is a golden key
         """
         return self.is_golden_key
+
+    def __str__(self):
+        self.__repr__()
 
     def set_is_golden_key(self, is_golden_key):
         """
@@ -58,6 +82,6 @@ if __name__ == "__main__":
     print(player.get_golden_key())
     player.set_golden_key(5)
     print(player.__repr__())
-    print(player.get_is_golden_key())
+    #print(player.get_is_golden_key())
     player.set_is_golden_key(True)
     print(player.__repr__())

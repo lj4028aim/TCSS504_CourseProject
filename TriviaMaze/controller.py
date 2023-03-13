@@ -39,5 +39,5 @@ class Controller:
     def reset_player(self):
         self.player.reset_player()
 
-
-
+    def use_player_golden_key(self):
+        self.player.reduce_golden_key()

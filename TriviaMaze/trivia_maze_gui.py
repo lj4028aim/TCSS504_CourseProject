@@ -396,6 +396,11 @@ class TriviaMazeGUI:
             elif k == event.keysym and v[0] == "OPEN":
                 self._controller.update_player_coordinates(v[1], v[2])
                 self.draw_all_image()
+            elif k == event.keysym and self._controller.player.has_golden_key():
+                self._controller.update_doorstate(v[1], v[2], k, Door.OPEN.value)
+                self._controller.update_player_coordinates(v[1], v[2])
+                #self._controller.use_player_golden_key()
+                self.draw_all_image()
 
 
     def display_question(self, offset_x, offset_y, direction):
@@ -479,6 +484,13 @@ class TriviaMazeGUI:
             self.draw_all_image()
             self.check_end_game()
 
+    def check_ans(self):
+        """
+        Check player's answer with correct answer. Displaying correct answer if their answer is wrong,
+        'Correct' otherwise.
+        """
+        print("clicked golden key")
+
 
     def clear_text_display(self):
         """Clears items in the text display."""
@@ -494,6 +506,11 @@ class TriviaMazeGUI:
             self.replay()
             text = Label(self._question_frame, text=f'Congratulations, you have won the game!', font="Times 30",
                          fg="green", padx=20)
+        elif not self._controller.is_exit_reachable(cur_row, cur_col) and self._controller.player.has_golden_key():
+            self.clear_text_display()
+            text = Label(self._question_frame, text=f'You have {self._controller.player.get_golden_key()} golden keys '
+                                                    f'available, pick a door to unlock',
+                         font="Times 30", fg="yellow", padx=20)
         elif not self._controller.is_exit_reachable(cur_row, cur_col):
             self.replay()
             text = Label(self._question_frame, text=f'Game Over, you have lost the game!', font="Times 30", fg="red",
