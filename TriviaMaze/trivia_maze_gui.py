@@ -332,7 +332,7 @@ class TriviaMazeGUI:
 
     def instructions(self):
         """Return game instruction information."""
-        instruction_frame = Frame(self.root, height=1000, width=800)
+        instruction_frame = Frame(self._root, height=1000, width=800)
         instruction_file = open("Instructions_TriviaMaze.txt", 'r')
         instruction_text = instruction_file.read()
 
@@ -473,6 +473,9 @@ class TriviaMazeGUI:
             answer_result = Label(self._question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red")
             self._controller.update_doorstate(offset_x, offset_y, direction, Door.CLOSE.value)
             answer_result.grid(row=2, column=1)
+            correct_answer = Label(self._question_frame, text=f"correct answer is: {answer}", font="Times 30",
+                                   anchor=W, fg="green")
+            correct_answer.grid(row=3, column=1)
             self.draw_all_image()
             self.check_end_game()
 
@@ -489,11 +492,11 @@ class TriviaMazeGUI:
         cur_col = self._controller.player.coordinates[1]
         if rooms[cur_row][cur_col].get_exit():
             self.replay()
-            text = Label(self._question_frame, text=f'Congratulations\n you have won the game!', font="Times 26",
+            text = Label(self._question_frame, text=f'Congratulations\n you have won the game!', font="Times 30",
                          fg="green", padx=20)
         elif not self._controller.is_exit_reachable(cur_row, cur_col):
             self.replay()
-            text = Label(self._question_frame, text=f'Game Over\nyou have lost the game!', font="Times 26", fg="red",
+            text = Label(self._question_frame, text=f'Game Over\nyou have lost the game!', font="Times 30", fg="red",
                          padx=20)
         else:
             return
