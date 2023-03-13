@@ -1,12 +1,12 @@
-from maze import Maze
+from TriviaMaze.Model.maze import Maze
 from tkinter import *
-from player import Player
+from TriviaMaze.Model.player import Player
 from tkinter import messagebox
 from controller import Controller
-from questions import Questions
-from room import Door
+from TriviaMaze.Model.questions import Questions
+from TriviaMaze.Model.room import Door
 import pickle
-from playsound import playsound
+
 
 class TriviaMazeGUI:
     """
@@ -251,7 +251,7 @@ class TriviaMazeGUI:
         # show message box to inform user
         messagebox.showinfo(title="Load Last Game", message="Last saved game has been loaded! ")
 
-        print("Here are the unpickled player from", saved_data[0].name)
+        # print("Here are the unpickled player from", saved_data[0].name)
         self._controller.player = saved_data[0]
         self._controller.maze = saved_data[1]
         self.room_size = saved_data[2]

@@ -1,6 +1,6 @@
 import pickle
-from player import Player
-from maze import Maze
+from TriviaMaze.Model.player import Player
+from TriviaMaze.Model.maze import Maze
 
 """Use this file to test save data"""
 

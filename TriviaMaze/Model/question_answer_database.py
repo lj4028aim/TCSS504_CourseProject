@@ -14,7 +14,7 @@ class QuestionAnswerDatabase:
     def get_db_path(self):
         """Return database file path."""
         # relative file path
-        path = 'db/TriviaMaze.db'
+        path = '../db/TriviaMaze.db'
         # get the path to the directory this script is in
         script_dir = os.path.dirname(__file__)
         # add the relative path to the database file from there
@@ -27,7 +27,7 @@ class QuestionAnswerDatabase:
     def get_question_path(self):
         """Return file path for folder that contains all questions.."""
         # relative file path
-        csv_path = 'TriviaMazeQuestion/csv_version/'
+        csv_path = '../TriviaMazeQuestion/csv_version/'
         # get the path to the directory this script is in
         script_dir = os.path.dirname(__file__)
         # add the relative path to input question csv file

@@ -19,7 +19,7 @@ class Questions:
     def get_db_path(self):
         """Return database file path."""
         # the relative file path
-        path = 'db/TriviaMaze.db'
+        path = '../db/TriviaMaze.db'
 
         # get the path to the directory this script is in
         scriptdir = os.path.dirname(__file__)

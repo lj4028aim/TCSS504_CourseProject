@@ -1,4 +1,4 @@
-from room import Room, Door
+from TriviaMaze.Model.room import Room, Door
 
 
 class Maze:
