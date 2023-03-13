@@ -4,11 +4,15 @@ import pandas as pd
 import os
 
 class QuestionAnswerDatabase:
+    """
+    Class is used to set up SQLite database and store all questions by implementing panda package.
+    """
 
     def __init(self):
         pass
 
     def get_db_path(self):
+        """Return database file path."""
         # relative file path
         path = 'db/TriviaMaze.db'
         # get the path to the directory this script is in
@@ -21,6 +25,7 @@ class QuestionAnswerDatabase:
         return db_path
 
     def get_question_path(self):
+        """Return file path for folder that contains all questions.."""
         # relative file path
         csv_path = 'TriviaMazeQuestion/csv_version/'
         # get the path to the directory this script is in

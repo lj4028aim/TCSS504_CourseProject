@@ -3,14 +3,21 @@ from sqlite3 import Error
 import random
 import os
 
-
 class Questions:
+    """
+    'Question' class is used to connect to SQLite database and get questions.
+
+    All questions will be stored into SQLite database by using panda package. 'get_questions' and 'get_answer' methods
+    are used to retrieve question and answer when needed.
+    """
 
     def __init__(self):
+        """Initialize question and answer objects."""
         self.question = []
         self.answer = []
 
     def get_db_path(self):
+        """Return database file path."""
         # the relative file path
         path = 'db/TriviaMaze.db'
 
