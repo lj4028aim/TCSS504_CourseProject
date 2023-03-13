@@ -492,11 +492,11 @@ class TriviaMazeGUI:
         cur_col = self._controller.player.coordinates[1]
         if rooms[cur_row][cur_col].get_exit():
             self.replay()
-            text = Label(self._question_frame, text=f'Congratulations\n you have won the game!', font="Times 30",
+            text = Label(self._question_frame, text=f'Congratulations, you have won the game!', font="Times 30",
                          fg="green", padx=20)
         elif not self._controller.is_exit_reachable(cur_row, cur_col):
             self.replay()
-            text = Label(self._question_frame, text=f'Game Over\nyou have lost the game!', font="Times 30", fg="red",
+            text = Label(self._question_frame, text=f'Game Over, you have lost the game!', font="Times 30", fg="red",
                          padx=20)
         else:
             return
