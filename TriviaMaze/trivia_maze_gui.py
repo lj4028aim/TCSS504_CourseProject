@@ -6,7 +6,7 @@ from controller import Controller
 from TriviaMaze.Model.questions import Questions
 from TriviaMaze.Model.room import Door
 import pickle
-
+import pygame
 
 class TriviaMazeGUI:
     """
@@ -58,7 +58,7 @@ class TriviaMazeGUI:
                                  command=lambda: self.start_game(new_game=True))
         new_game_button.grid(row=0, pady=5)
         continue_game_button = Button(self.begin_window,
-                                      text="Continue Game",
+                                      text="Load Game",
                                       font="Verdana 20",
                                       command=self.load_game)
         continue_game_button.grid(row=1, pady=5)
@@ -72,6 +72,7 @@ class TriviaMazeGUI:
                              font="Verdana 20",
                              command=self.exit_pressed)
         exit_button.grid(row=3, pady=5)
+
 
 
 
@@ -175,6 +176,9 @@ class TriviaMazeGUI:
         self._question_frame = Frame(self.game_window, height=600, width=1028)
         self._question_frame.grid_propagate(0)
         self._question_frame.grid(row=2, column=0)
+        pygame.mixer.init()
+        pygame.mixer.music.load("sound/bgmusic.wav")
+        pygame.mixer.music.play(-1)
         # self._question_frame.focus_set()
 
     def start_new_game(self):
@@ -469,6 +473,9 @@ class TriviaMazeGUI:
             self._controller.update_player_coordinates(offset_x, offset_y)
             self.draw_all_image()
             self.check_end_game()
+            correct_sound = pygame.mixer.Sound("sound/correct.wav")
+            pygame.mixer.Sound.play(correct_sound)
+
         else:
             answer_result = Label(self._question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red")
             self._controller.update_doorstate(offset_x, offset_y, direction, Door.CLOSE.value)
@@ -478,6 +485,8 @@ class TriviaMazeGUI:
             correct_answer.grid(row=3, column=1)
             self.draw_all_image()
             self.check_end_game()
+            wrong_sound = pygame.mixer.Sound("sound/wrong.wav")
+            pygame.mixer.Sound.play(wrong_sound)
 
 
     def clear_text_display(self):
