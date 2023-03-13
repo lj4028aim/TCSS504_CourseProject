@@ -26,6 +26,7 @@ class Maze:
         return self.__rooms
 
     def reset_maze(self):
+        """Reset maze."""
         for i in range(self._rows):
             for j in range(self._cols):
                 self.__rooms[i][j].reset_room()
@@ -33,6 +34,7 @@ class Maze:
         self.__rooms[self._rows - 1][self._cols - 1].set_exit(True)
 
     def set_edge_room_door_close(self, room):
+        """Set boundary's door to be closed."""
         for row in range(self._rows):
             for col in range(self._cols):
                 if row == 0:
@@ -45,6 +47,7 @@ class Maze:
                     room[row][col].east = Door.CLOSE.value
 
     def is_exit_reachable(self, x, y):
+        """Check if exit is reachable."""
         visited = []
         return self.check_traversal(x, y, visited)
 
@@ -67,6 +70,7 @@ class Maze:
         return found_path
 
     def check_direction(self, row, col, direction):
+        """Return True if neighbor exists and not at the boundary or player reaches exist."""
         rooms = self.rooms
         door_state_map = {"north": rooms[row][col].north, "south": rooms[row][col].south, "east": rooms[row][col].east,
                           "west": rooms[row][col].west}
@@ -76,12 +80,10 @@ class Maze:
         return False
 
     def is_neighbour_exist(self, row, col, direction):
+        """Return True if neighbor exists, False otherwise."""
         offset = {"north": [-1, 0], "south": [1, 0], "east": [0, 1], "west": [0, -1]}
         row += offset[direction][0]
         col += offset[direction][1]
         if 0 <= row < self._rows and 0 <= col < self._cols:
             return True
         return False
-
-
-

@@ -23,6 +23,7 @@ class Room:
         self.east = Door.EXIST.value
 
     def update_door_state(self, direction, doorstate):
+        """Update doors' state."""
         if direction == "Left":
             self.west = doorstate
         elif direction == "Right":
@@ -33,6 +34,7 @@ class Room:
             self.south = doorstate
 
     def reset_room(self):
+        """Reset the room."""
         self.__exit = False
         self._visited = False
         self.north = Door.EXIST.value

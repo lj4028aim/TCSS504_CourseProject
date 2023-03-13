@@ -209,7 +209,7 @@ class TriviaMazeGUI:
         help_button = Button(self.menu_frame,
                                    text="Help",
                                    font="Verdana 10",
-                                   command=self.about_the_game)
+                                   command=self.how_to_play)
         exit_button = Button(self.menu_frame,
                                    text="Exit",
                                    font="Verdana 10",
@@ -346,7 +346,7 @@ class TriviaMazeGUI:
         back_button.grid(row=1, column=0)
 
     def exit_pressed(self):
-        """Display message box asking user wants to exti game."""
+        """Display message box asking user wants to exit game."""
         pop = Toplevel()
         pop.title("Exit")
         pop.geometry("250x150")
