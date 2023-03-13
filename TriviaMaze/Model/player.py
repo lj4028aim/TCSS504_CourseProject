@@ -1,11 +1,11 @@
 class Player:
 
     def __init__(self, maze, name="monster", golden_key=1):
-        self.name = name
+        self.name = str(name)
         self.maze = maze
         self.coordinates = [1, 1]
-        self.golden_key = golden_key
-        self.is_golden_key = True
+        self.golden_key = int(golden_key)
+        self.is_golden_key = False
 
     def move_player(self, x, y):
         updated_x = self.coordinates[0] + x
@@ -17,7 +17,7 @@ class Player:
     def reset_player(self):
         self.coordinates = [1, 1]
         self.golden_key = 1
-        self.is_golden_key = True
+        self.is_golden_key = False
 
     def get_name(self):
         pass
@@ -25,7 +25,7 @@ class Player:
 
     def get_golden_key(self):
         """
-        Returns the number of golden keys available
+        Returns the number of golden keys
         :return: number of golden keys
         """
         return self.golden_key
@@ -34,20 +34,20 @@ class Player:
         pass
 
     def get_is_golden_key(self):
-        pass
-
-    def set_is_golden_key(self):
-        pass
-
-    def has_golden_key(self):
+        """Returns True when there is permission to use golden key otherwise False"""
         return self.is_golden_key
 
+    def set_is_golden_key(self, is_golden_key):
+        """
+        Given True, allows for permission to use golden key
+        :param is_golden_key: boolean, permission to use golden key
+        """
+        self.is_golden_key = is_golden_key
+
+    def has_golden_key(self):
+        """Checks if there is a golden key is available"""
+        return self.golden_key > 0
+
     def reduce_golden_key(self):
-        """
-        Reduces the amount of golden keys by 1
-        """
+        """Reduces the amount of golden keys by 1"""
         self.golden_key = max(self.golden_key-1, 0)
-        if self.golden_key > 0:
-            self.set_is_golden_key(True)
-        else:
-            self.set_is_golden_key(False)
