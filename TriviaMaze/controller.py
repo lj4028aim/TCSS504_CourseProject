@@ -46,3 +46,20 @@ class Controller:
     def reset_player(self):
         """Reset player status."""
         self.player.reset_player()
+
+    def use_golden_key(self):
+        """Uses a golden key and locks ability to use a golden key."""
+        self.player.reduce_golden_key()
+        self.lock_golden_key()
+
+    def unlock_golden_key(self):
+        """Unlocks the ability to use a golden key."""
+        self.player.set_is_golden_key(True)
+
+    def lock_golden_key(self):
+        """Locks the ability to use a golden key."""
+        self.player.set_is_golden_key(False)
+
+    def is_golden_key_unlocked(self):
+        """Checks if the golden key feature can be used."""
+        return self.player.get_is_golden_key()

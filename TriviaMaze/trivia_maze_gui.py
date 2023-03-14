@@ -218,7 +218,7 @@ class TriviaMazeGUI:
                                    text="Exit",
                                    font="Verdana 10",
                                    command=self.exit_game)
-        # new_game_button.pack()
+
         new_game_button.grid(row=0, column=0)
         save_button.grid(row=0, column=1)
         load_button.grid(row=0, column=2)
@@ -230,7 +230,7 @@ class TriviaMazeGUI:
         # keep a list of data needed to store progress
         current_progress = [self._controller.player, self._controller.maze, self.room_size]
 
-        # create a binary file for writing 'wb' called laptopstore.pkl
+        # create a binary file to save game data
         pickle_file = open('game_data.pkl', 'wb')
 
         # pickle the nested object and write it to file
@@ -243,11 +243,10 @@ class TriviaMazeGUI:
 
     def load_game(self, event=None):
         """Load the saved progress and start the game window"""
-        # now read the pickle file, 'rb' open a binary file for reading
+        # now read the pickle file
         pickle_file = open('game_data.pkl', 'rb')
 
         # unpickle the nested object from the file
-        # [self.controller.maze, self.room_size, self.controller.player]
         saved_data = pickle.load(pickle_file)
 
         # close file
@@ -255,7 +254,6 @@ class TriviaMazeGUI:
         # show message box to inform user
         messagebox.showinfo(title="Load Last Game", message="Last saved game has been loaded! ")
 
-        # print("Here are the unpickled player from", saved_data[0].name)
         self._controller.player = saved_data[0]
         self._controller.maze = saved_data[1]
         self.room_size = saved_data[2]
@@ -400,6 +398,12 @@ class TriviaMazeGUI:
             elif k == event.keysym and v[0] == "OPEN":
                 self._controller.update_player_coordinates(v[1], v[2])
                 self.draw_all_image()
+            elif k == event.keysym and self._controller.player.has_golden_key() and \
+                    self._controller.is_golden_key_unlocked():
+                self._controller.update_doorstate(v[1], v[2], k, Door.OPEN.value)
+                self._controller.update_player_coordinates(v[1], v[2])
+                self._controller.use_golden_key()
+                self.draw_all_image()
 
 
     def display_question(self, offset_x, offset_y, direction):
@@ -488,14 +492,13 @@ class TriviaMazeGUI:
             wrong_sound = pygame.mixer.Sound("sound/wrong.wav")
             pygame.mixer.Sound.play(wrong_sound)
 
-
     def clear_text_display(self):
         """Clears items in the text display."""
         for item in self._question_frame.winfo_children():
             item.destroy()
 
     def check_end_game(self):
-        """Checks if player wins or maze exit is no longer reachable. """
+        """Checks if player wins or maze exit is no longer reachable or can use golden key """
         rooms = self._controller.get_rooms()
         cur_row = self._controller.player.coordinates[0]
         cur_col = self._controller.player.coordinates[1]
@@ -503,6 +506,12 @@ class TriviaMazeGUI:
             self.replay()
             text = Label(self._question_frame, text=f'Congratulations, you have won the game!', font="Times 30",
                          fg="green", padx=20)
+        elif not self._controller.is_exit_reachable(cur_row, cur_col) and self._controller.player.has_golden_key():
+            self.clear_text_display()
+            text = Label(self._question_frame, text=f'You have {self._controller.player.get_golden_key()} golden keys '
+                                                    f'available! Pick a door to unlock.',
+                         font="Times 30", fg="yellow", padx=20)
+            self._controller.unlock_golden_key()
         elif not self._controller.is_exit_reachable(cur_row, cur_col):
             self.replay()
             text = Label(self._question_frame, text=f'Game Over, you have lost the game!', font="Times 30", fg="red",
