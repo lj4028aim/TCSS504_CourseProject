@@ -75,9 +75,6 @@ class TriviaMazeGUI:
                              command=self.exit_pressed)
         exit_button.grid(row=3, pady=5)
 
-
-
-
     def about_the_game(self, event=None):
         """
         Return information of 'About' under 'Help' menu bar.
@@ -400,6 +397,8 @@ class TriviaMazeGUI:
         no.grid(row=0, column=2, padx=10)
 
     def on_k_key(self, event):
+        """Ensure player can maneuver themselves by using 'k' key on keyboard."""
+        print(f"on key k, direction: {self._key_direction}")
         if self._key_direction and self._controller.player.has_golden_key():
             room = self._controller.maze.rooms
             cur_row = self._controller.player.coordinates[0]
@@ -409,36 +408,16 @@ class TriviaMazeGUI:
                         "Up": [room[cur_row][cur_col].north, -1, 0],
                         "Down": [room[cur_row][cur_col].south, 1, 0]}
 
-            self.unlock_door(door_dir[self._key_direction][1], door_dir[self._key_direction][2], self._key_direction)
-            self._controller.use_golden_key()
-            self.update_key_status()
-            self.clear_text_display()
+            self.enter_room_with_key(door_dir[self._key_direction][1], door_dir[self._key_direction][2],
+                                     self._key_direction)
 
-    def on_arrow_key(self, event):
-        """Ensure player can maneuver themselves by using 'Left', 'Right', 'Up', and 'Down' keys on keyboard."""
-        self._key_direction = event.keysym
-        room = self._controller.maze.rooms
-        cur_row = self._controller.player.coordinates[0]
-        cur_col = self._controller.player.coordinates[1]
-        door_dir = {"Left": [room[cur_row][cur_col].west, 0, -1],
-                    "Right": [room[cur_row][cur_col].east, 0, 1],
-                    "Up": [room[cur_row][cur_col].north, -1, 0],
-                    "Down": [room[cur_row][cur_col].south, 1, 0]}
-        for k, v in door_dir.items():
-            if k == event.keysym and v[0] == "EXIST" and self._display_question_token:
-                self.clear_text_display()
-                self.display_question(v[1], v[2], k)
-            elif k == event.keysym and v[0] == "OPEN":
-                self._controller.update_player_coordinates(v[1], v[2])
-                self.draw_all_image()
-            elif k == event.keysym and self._controller.player.has_golden_key() and \
-                    self._controller.is_golden_key_unlocked():
-                self.unlock_door(v[1], v[2], k)
-                self._controller.use_golden_key()
-                self.update_key_status()
-            elif k == event.keysym and v[0] == "CLOSE":
-                self.clear_text_display()
-                self.display_key_instruction()
+    def enter_room_with_key(self, offset_x, offset_y, direction):
+        """Moves player to desired direction using golden key"""
+        self.unlock_door(offset_x, offset_y, direction)
+        self._controller.use_golden_key()
+        self.update_key_status()
+        self.clear_text_display()
+        self._display_question_token = True
 
     def display_key_instruction(self):
         """Display instructions for using a golden key"""
@@ -451,6 +430,35 @@ class TriviaMazeGUI:
                                       text="Door is locked",
                                       font="Times 20", fg="red", padx=20)
         instruction_label.grid(row=0, column=0, sticky=E + W)
+
+    def on_arrow_key(self, event):
+        """Ensure player can maneuver themselves by using 'Left', 'Right', 'Up', and 'Down' keys on keyboard."""
+        self._key_direction = None
+        room = self._controller.maze.rooms
+        cur_row = self._controller.player.coordinates[0]
+        cur_col = self._controller.player.coordinates[1]
+        door_dir = {"Left": [room[cur_row][cur_col].west, 0, -1],
+                    "Right": [room[cur_row][cur_col].east, 0, 1],
+                    "Up": [room[cur_row][cur_col].north, -1, 0],
+                    "Down": [room[cur_row][cur_col].south, 1, 0]}
+        for k, v in door_dir.items():
+            if k == event.keysym and v[0] == "EXIST" and self._display_question_token:
+                self._key_direction = event.keysym
+                print(f"entered elif door EXIST, direction: {self._key_direction}")
+                self.clear_text_display()
+                self.display_question(v[1], v[2], k)
+            elif k == event.keysym and v[0] == "OPEN":
+                self._key_direction = None
+                self._controller.update_player_coordinates(v[1], v[2])
+                self.draw_all_image()
+            elif k == event.keysym and self._controller.player.has_golden_key() and \
+                    self._controller.is_golden_key_unlocked():
+                self._key_direction = event.keysym
+                self.enter_room_with_key(v[1], v[2], k)
+            elif k == event.keysym and v[0] == "CLOSE" and self._controller.is_inbound(v[1], v[2], k):
+                self._key_direction = event.keysym
+                self.clear_text_display()
+                self.display_key_instruction()
 
     def display_question(self, offset_x, offset_y, direction):
         """Display questions when player hit a door."""
@@ -519,8 +527,6 @@ class TriviaMazeGUI:
             answer_result = Label(self._question_frame, text='Correct!', font="Times 30", anchor=W, fg="green")
             answer_result.grid(row=2, column=1)
             self.unlock_door(offset_x, offset_y, direction)
-            correct_sound = pygame.mixer.Sound("sound/correct.wav")
-            pygame.mixer.Sound.play(correct_sound)
 
         else:
             answer_result = Label(self._question_frame, text='Wrong answer', font="Times 30", anchor=W, fg="red")
@@ -536,10 +542,13 @@ class TriviaMazeGUI:
 
     def unlock_door(self, offset_x, offset_y, direction):
         """Unlocks a door and moves player"""
+        self._key_direction = None
         self._controller.update_doorstate(offset_x, offset_y, direction, Door.OPEN.value)
         self._controller.update_player_coordinates(offset_x, offset_y)
         self.draw_all_image()
         self.check_end_game()
+        correct_sound = pygame.mixer.Sound("sound/correct.wav")
+        pygame.mixer.Sound.play(correct_sound)
 
     def clear_text_display(self):
         """Clears items in the text display."""

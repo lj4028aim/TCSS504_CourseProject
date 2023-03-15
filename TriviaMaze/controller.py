@@ -63,3 +63,10 @@ class Controller:
     def is_golden_key_unlocked(self):
         """Checks if the golden key feature can be used."""
         return self.player.get_is_golden_key()
+
+    def is_inbound(self, x, y, direction):
+        """Return True if neighbor exists, False otherwise."""
+        x = self.player.coordinates[0] + x
+        y = self.player.coordinates[1] + y
+        all_directions = {"Left": "west", "Right": "east", "Up": "north", "Down": "south"}
+        return self.maze.is_neighbour_exist(x, y, all_directions[direction])
