@@ -3,10 +3,17 @@ from TriviaMaze.Model.room import Room, Door
 
 class Maze:
     """
-    class is used to crete/contains a maze of Rooms.
+    class used to represent of a maze which is consists of different size of rooms. It also contains methods
+    to crete and manipulate maze.
     """
 
     def __init__(self, rows=5, cols=5):
+        """
+        Initialize a new maze object with specific size 5x5.
+        - _rows: an integer number used to represent rows in the maze. The default number of row is 5.
+        - _cols: an integer number used to represent columns in the maze. The default number of column is 5.
+        - __rooms: a 2D array used to represent size of maze.
+        """
         self._rows = rows
         self._cols = cols
         self.__rooms = []

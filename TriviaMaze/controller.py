@@ -1,7 +1,13 @@
 
-
 class Controller:
+    """Class 'Controller' is used to control the whole game's logic."""
     def __init__(self, maze, player, questions):
+        """
+        Initialize new instance of class 'Controller' with attribute maze, player, and question.
+        - maze: maze used in the game.
+        - player: whoever plays the game.
+        - questions: questions used for trivia maze game.
+        """
         self.maze = maze
         self.player = player
         self.questions = questions

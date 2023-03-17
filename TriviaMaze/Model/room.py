@@ -1,8 +1,11 @@
 from enum import Enum
 
 
-# Enum class to list value for Doors, prevent any other values set to door
 class Door(Enum):
+    """
+    Class 'Door' is a child class of Enum class. It is used to list value for Doors,
+    prevent any other values set to door.
+    """
     EXIST = "EXIST"
     OPEN = "OPEN"
     CLOSE = "CLOSE"
@@ -10,10 +13,20 @@ class Door(Enum):
 
 class Room:
     """
-    room class is built to contain a default constructor and the following methods.
+    Class used to represent rooms in the trivia maze game.
     """
 
     def __init__(self, row, col):
+        """
+        Initialize new room object with following attributes:
+        - __exit: flag to indicate the room is exit or not. It is 'False' by default.
+        - row: an integer number used to represent index of row of the room.
+        - col: an integer number used to represent index of column of the room.
+        - north: the state of north door.
+        - south: the state of south door.
+        - west: the state of west door.
+        - east: the state of east door.
+        """
         self.__exit = False
         self.row = row
         self.col = col

@@ -5,14 +5,21 @@ import os
 
 class Questions:
     """
-    'Question' class is used to connect to SQLite database and get questions.
+    'Question' class is used to connect to SQLite database and allow user to retrieve questions and associated
+    correct answers.
 
     All questions will be stored into SQLite database by using panda package. 'get_questions' and 'get_answer' methods
     are used to retrieve question and answer when needed.
     """
 
     def __init__(self):
-        """Initialize question and answer objects."""
+        """
+        Initialize new questions object with question and answer attributes.
+        - question: a list used to contain all fetched questions retrieved from database. Each question will be
+        represented as a dictionary format with keys 'question', 'A', 'B', 'C', 'D', and 'correct_answer'
+        - answer: a list used to contain all correct answers associated with each specific
+        question held in self.question.
+        """
         self.question = []
         self.answer = []
 
