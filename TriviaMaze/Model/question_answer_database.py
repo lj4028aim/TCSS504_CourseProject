@@ -8,7 +8,7 @@ class QuestionAnswerDatabase:
     Class is used to set up SQLite database and store all questions by implementing panda package.
     """
 
-    def __init(self):
+    def __init__(self):
         """
         Initialize a question and answer database object with assigned database path and question path.
         """
