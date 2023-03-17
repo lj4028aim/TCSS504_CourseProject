@@ -146,7 +146,7 @@ class TriviaMazeGUI:
                              font=("Arial", 10),
                              command=self.about_the_game)
 
-        self._root.bind("<Control-n>", self.start_game)
+        self._root.bind("<Control-n>", self.start_new_game)
         self._root.bind("<Control-s>", self.save_game)
         self._root.bind("<Control-q>", self.exit_game)
         self._root.bind("<Control-l>", self.load_game)
@@ -185,7 +185,7 @@ class TriviaMazeGUI:
         pygame.mixer.music.play(-1)
         # self._question_frame.focus_set()
 
-    def start_new_game(self):
+    def start_new_game(self, event):
         """Reset game progress and start a new game."""
         self.reset_game_progress()
         self._display_question_token = True
@@ -279,11 +279,13 @@ class TriviaMazeGUI:
         new_frame.grid(row=0, column=0)
 
     def draw_cell(self, row, col):
+        """Draw cells in the maze."""
         self.display.create_rectangle(self.room_size * col + 5, self.room_size * row + 5,
                                       self.room_size * (col + 1) - 5,
                                       self.room_size * (row + 1) - 5, fill='pink', outline="")
 
     def draw_doors(self, row, col):
+        """Draw doors for the given cell."""
         rooms = self._controller.maze.rooms
         direction = ["north", "south", "east", "west"]
         door_state_map = {"north": rooms[row][col].north,
@@ -297,6 +299,7 @@ class TriviaMazeGUI:
             self.draw_door_state(door_state_map[dic], row, col, dic)
 
     def draw_door_state(self, door_state, row, col, direction):
+        """Set door's state for a given cell."""
         offset_dict = {"north": [0.5, 0], "south": [0.5, 1], "east": [1, 0.5], "west": [0, 0.5]}
         if door_state == "OPEN":
             self.display.create_image(self.room_size * col + self.room_size * offset_dict[direction][0],
@@ -320,6 +323,7 @@ class TriviaMazeGUI:
                 self.draw_exit(i, j)
 
     def draw_exit(self, x, y):
+        """Draw exit location."""
         room = self._controller.maze.rooms
         if room[x][y].get_exit():
             offset = self.room_size // 2
@@ -382,6 +386,7 @@ class TriviaMazeGUI:
         no.grid(row=0, column=2, padx=10)
 
     def replay(self):
+        """Re-starts the game, reset player's score and location."""
         pop = Toplevel()
         pop.title("Replay")
         pop.geometry("250x150")
@@ -410,6 +415,10 @@ class TriviaMazeGUI:
 
             self.enter_room_with_key(door_dir[self._key_direction][1], door_dir[self._key_direction][2],
                                      self._key_direction)
+        elif not self._key_direction and self._controller.player.has_golden_key():
+            messagebox.showinfo(title="Choose a door.", message="Please choose a door to use golden key!!!")
+        else:
+            golden_key_out_message = messagebox.showinfo(title="No More Golden Key!", message="You run out of your golden key!")
 
     def enter_room_with_key(self, offset_x, offset_y, direction):
         """Moves player to desired direction using golden key"""
