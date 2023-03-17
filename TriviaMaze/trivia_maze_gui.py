@@ -403,7 +403,6 @@ class TriviaMazeGUI:
 
     def on_k_key(self, event):
         """Ensure player can maneuver themselves by using 'k' key on keyboard."""
-        print(f"on key k, direction: {self._key_direction}")
         if self._key_direction and self._controller.player.has_golden_key():
             room = self._controller.maze.rooms
             cur_row = self._controller.player.coordinates[0]
@@ -453,7 +452,6 @@ class TriviaMazeGUI:
         for k, v in door_dir.items():
             if k == event.keysym and v[0] == "EXIST" and self._display_question_token:
                 self._key_direction = event.keysym
-                print(f"entered elif door EXIST, direction: {self._key_direction}")
                 self.clear_text_display()
                 self.display_question(v[1], v[2], k)
             elif k == event.keysym and v[0] == "OPEN":
@@ -464,7 +462,7 @@ class TriviaMazeGUI:
                     self._controller.is_golden_key_unlocked():
                 self._key_direction = event.keysym
                 self.enter_room_with_key(v[1], v[2], k)
-            elif k == event.keysym and v[0] == "CLOSE" and self._controller.is_inbound(v[1], v[2], k):
+            elif k == event.keysym and v[0] == "CLOSE" and self._controller.is_inbound(v[1], v[2]):
                 self._key_direction = event.keysym
                 self.clear_text_display()
                 self.display_key_instruction()

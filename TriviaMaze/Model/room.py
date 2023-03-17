@@ -35,6 +35,13 @@ class Room:
         self.west = Door.EXIST.value
         self.east = Door.EXIST.value
 
+    def __repr__(self):
+        return f"r: {self.row} c: {self.col} n: {self.north} s: {self.south} w: {self.west} e: {self.east}"
+
+    def __str__(self):
+        return f"row: {self.row} column: {self.col} north: {self.north} south: {self.south} west: {self.west} east: " \
+               f"{self.east} "
+
     def update_door_state(self, direction, doorstate):
         """Update doors' state."""
         if direction == "Left":

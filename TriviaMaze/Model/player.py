@@ -1,13 +1,7 @@
 class Player:
-    """Represent a player in the maze."""
 
     def __init__(self, maze, name="monster", golden_key=1):
-        """
-        Initialize a new instance of Player
-        - name (str): the name of the player
-        - maze: the maze that the player is in
-        - coordinates (list[int]): the player's current position represented by x,y coordinates
-        """
+        """Initialize a new instance of Player"""
         self.name = str(name)
         self.maze = maze
         self.coordinates = [1, 1]
@@ -19,7 +13,6 @@ class Player:
         return f"name: {self.name}, # of golden keys: {self.golden_key}, is a golden key: {self.is_golden_key}"
 
     def move_player(self, x, y):
-        """Move the player x steps horizontally and y steps vertically."""
         updated_x = self.coordinates[0] + x
         updated_y = self.coordinates[1] + y
         if 0 <= updated_x < self.maze._rows and 0 <= updated_y < self.maze._cols:
@@ -27,7 +20,6 @@ class Player:
             self.coordinates[1] = updated_y
 
     def reset_player(self):
-        """Reset player's location and golden key status."""
         self.coordinates = [1, 1]
         self.golden_key = 1
         self.is_golden_key = False
