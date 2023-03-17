@@ -11,7 +11,14 @@ class Controller:
         self.player.move_player(x, y)
 
     def update_doorstate(self, x, y, direction, doorstate):
-        """Update door's state."""
+        """
+        Update door's state.
+
+        :param x: amount to offset current horizontal coordinate
+        :param y: amount to offset current horizontal coordinate
+        :param direction: desired direction, options: "Left", "Right", "Up": "Down"
+        :param doorstate: desired door state
+        """
         opposite_dir = {"Left": "Right", "Right": "Left", "Up": "Down", "Down": "Up"}
         cur_x = self.player.coordinates[0]
         cur_y = self.player.coordinates[1]
@@ -23,7 +30,12 @@ class Controller:
             rooms[updated_x][updated_y].update_door_state(opposite_dir[direction], doorstate)
 
     def is_exit_reachable(self, x, y):
-        """Check exit if reachable."""
+        """
+        Checks if the exit is within reach.
+
+        :param x: horizontal coordinate
+        :param y: vertical coordinate
+        """
         return self.maze.is_exit_reachable(x, y)
 
     def get_rooms(self):
@@ -64,9 +76,13 @@ class Controller:
         """Checks if the golden key feature can be used."""
         return self.player.get_is_golden_key()
 
-    def is_inbound(self, x, y, direction):
-        """Return True if neighbor exists, False otherwise."""
-        x = self.player.coordinates[0] + x
-        y = self.player.coordinates[1] + y
-        all_directions = {"Left": "west", "Right": "east", "Up": "north", "Down": "south"}
-        return self.maze.is_neighbour_exist(x, y, all_directions[direction])
+    def is_inbound(self, x, y):
+        """
+        Return True if neighbor exists, False otherwise.
+
+        :param x: amount to offset current horizontal coordinate
+        :param y: amount to offset current horizontal coordinate
+        """
+        new_x = self.player.coordinates[0] + x
+        new_y = self.player.coordinates[1] + y
+        return 0 <= new_x < self.maze._rows and 0 <= new_y < self.maze._cols
