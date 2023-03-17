@@ -17,6 +17,12 @@ class Maze:
         self.set_edge_room_door_close(self.__rooms)
         self.__rooms[rows - 1][cols - 1].set_exit(True)
 
+    def __repr__(self):
+        return f"r: {self._rows} c: {self._cols} rms: {str(self.__rooms)}"
+
+    def __str__(self):
+        return f"Maze{self._rows}x{self._cols}: {str(self.__rooms)}"
+
     @property
     def rooms(self):
         """
