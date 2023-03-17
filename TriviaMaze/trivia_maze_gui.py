@@ -185,7 +185,7 @@ class TriviaMazeGUI:
         pygame.mixer.music.play(-1)
         # self._question_frame.focus_set()
 
-    def start_new_game(self, event):
+    def start_new_game(self, event=None):
         """Reset game progress and start a new game."""
         self.reset_game_progress()
         self._display_question_token = True
@@ -396,7 +396,7 @@ class TriviaMazeGUI:
         pop_label.pack(pady=10)
         exit_frame = Frame(pop, bg="pink")
         exit_frame.pack(pady=5)
-        yes = Button(exit_frame, text="YES", command=lambda: [self.start_new_game(), pop.destroy()], bg="orange")
+        yes = Button(exit_frame, text="YES", command=lambda: [self.start_new_game(event=None), pop.destroy()], bg="orange")
         yes.grid(row=0, column=1, padx=10)
         no = Button(exit_frame, text="NO", command=exit_frame.quit, bg="yellow")
         no.grid(row=0, column=2, padx=10)
@@ -579,9 +579,9 @@ class TriviaMazeGUI:
                          fg="green", padx=20)
         elif not self._controller.is_exit_reachable(cur_row, cur_col) and self._controller.player.has_golden_key():
             self.clear_text_display()
-            text = Label(self._question_frame, text=f'You have {self._controller.player.get_golden_key()} golden keys '
+            text = Label(self._question_frame, text=f'You have {self._controller.player.get_golden_key()} golden key '
                                                     f'available! Pick a door to unlock.',
-                         font="Times 30", fg="yellow", padx=20)
+                         font="Times 30", fg="green", padx=20)
             self._controller.unlock_golden_key()
         elif not self._controller.is_exit_reachable(cur_row, cur_col):
             self.replay()
