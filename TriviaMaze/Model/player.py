@@ -13,6 +13,11 @@ class Player:
         return f"name: {self.name}, # of golden keys: {self.golden_key}, is a golden key: {self.is_golden_key}"
 
     def move_player(self, x, y):
+        """
+             Moves the position of Player to then given coordinates.
+             :param x: horizontal coordinate
+             :param y: vertical coordinate
+             """
         updated_x = self.coordinates[0] + x
         updated_y = self.coordinates[1] + y
         if 0 <= updated_x < self.maze._rows and 0 <= updated_y < self.maze._cols:
@@ -20,6 +25,7 @@ class Player:
             self.coordinates[1] = updated_y
 
     def reset_player(self):
+        """Reset player's coordinate."""
         self.coordinates = [1, 1]
         self.golden_key = 1
         self.is_golden_key = False
