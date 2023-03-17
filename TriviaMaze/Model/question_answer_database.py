@@ -9,7 +9,11 @@ class QuestionAnswerDatabase:
     """
 
     def __init(self):
-        pass
+        """
+        Initialize a question and answer database object with assigned database path and question path.
+        """
+        self.db_path = self.get_db_path()
+        self.q_path = self.get_question_path()
 
     def get_db_path(self):
         """Return database file path."""
@@ -55,9 +59,9 @@ class QuestionAnswerDatabase:
          Inserting values stored in csv files into database with panda package
          :return:
          """
-        database = db_path
-        question_path = q_path
-        conn = self.create_connection(database)
+        # database = db_path
+        # question_path = q_path
+        conn = self.create_connection(self.db_path)
 
         question_list = ["animals.csv",
                          # "brain-teasers.csv",
@@ -83,13 +87,13 @@ class QuestionAnswerDatabase:
                          "world.csv"]
         fields = ["Questions", "answer_A", "answer_B", "answer_C", "answer_D", "Correct_answer"]
         for i in range(len(question_list)):
-            df = pd.read_csv(question_path + f"{question_list[i]}", usecols=fields)
+            df = pd.read_csv(self.q_path + f"{question_list[i]}", usecols=fields)
 
             df.to_sql("Questions", conn, if_exists="append", index=False)
 
 
 if __name__ == "__main__":
     db = QuestionAnswerDatabase()
-    db_path = db.get_db_path()
-    q_path = db.get_question_path()
+    # db_path = db.get_db_path()
+    # q_path = db.get_question_path()
     db.main()
