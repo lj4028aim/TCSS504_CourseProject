@@ -13,9 +13,7 @@ class Questions:
     """
 
     def __init__(self):
-        """
-        Initialize new questions object with question and answer attributes.
-        """
+        """Initialize new questions object with question and answer attributes."""
         # a list used to contain all fetched questions retrieved from database. Each question will be
         # represented as a dictionary format with keys 'question', 'A', 'B', 'C', 'D', and 'correct_answer'
         self.question = []
@@ -37,6 +35,7 @@ class Questions:
     def create_connection(self, db_file):
         """
         create a database connection to the SQLite database specified by the db_file
+
         :param db_file: database file
         :return: connection object or None
         """
@@ -52,6 +51,7 @@ class Questions:
     def get_questions(self, num_questions_expect):
         """
         Connecting to database and fetch certain amount of questions. Storing all fetched questions into
+
         :param num_questions_expect: number of questions expected
         :return: a list which hold all questions. Each question and its associated answers is in dictionary format.
         """
@@ -86,6 +86,7 @@ class Questions:
     def gen_num_questions(self, num_questions_expect):
         """
         Generate a list holds all unique randomly generated number
+
         :return: a list which is composed of unique question index
         """
         total_num_questions = 100  # number of questions stored in database
@@ -108,6 +109,7 @@ class Questions:
     def get_answer(self, question):
         """
         Get correct answer from question
+
         :param question: a dictionary which hold all questions and answers
         :return: correct answer
         """

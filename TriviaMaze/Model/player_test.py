@@ -12,7 +12,7 @@ class ShapeTests(unittest.TestCase):
         """Test creation of player with no params"""
         maze = Maze()
         player = Player(maze)
-        expected_player = "name: monster, # of golden keys: 1, is a golden key: False"
+        expected_player = "name: monster, # of golden keys: 5, is a golden key: False"
         self.assertEqual(expected_player, player.__repr__(), "expected attributes differ; player, golden keys, "
                                                              "is golden key")
 
@@ -20,14 +20,14 @@ class ShapeTests(unittest.TestCase):
         """Test creation of player with given name"""
         maze = Maze()
         player = Player(maze, "Test")
-        expected_player = "name: Test, # of golden keys: 1, is a golden key: False"
+        expected_player = "name: Test, # of golden keys: 5, is a golden key: False"
         self.assertEqual(expected_player, player.__repr__(), "expected attribute player to be Test")
 
     def test_create_player_with_int_name(self):
         """Test creation of player with given name as int type"""
         maze = Maze()
         player = Player(maze, 100)
-        expected_player = "name: 100, # of golden keys: 1, is a golden key: False"
+        expected_player = "name: 100, # of golden keys: 5, is a golden key: False"
         self.assertEqual(expected_player, player.__repr__(), "expected attribute player to be Test")
 
     def test_create_player_with_name_golden_keys(self):
@@ -48,7 +48,7 @@ class ShapeTests(unittest.TestCase):
         maze = Maze()
         player = Player(maze)
         player.set_name("Test")
-        expected_player = "name: Test, # of golden keys: 1, is a golden key: False"
+        expected_player = "name: Test, # of golden keys: 5, is a golden key: False"
         self.assertEqual(expected_player, player.__repr__(), "expected name to be Test")
 
     def test_set_int_name(self):
@@ -62,7 +62,7 @@ class ShapeTests(unittest.TestCase):
         """Test get_golden_key() returns 0 as the number of golden keys"""
         maze = Maze()
         player = Player(maze)
-        self.assertEqual(1, player.get_golden_key(), "expected golden keys to be 1")
+        self.assertEqual(5, player.get_golden_key(), "expected golden keys to be 5")
 
     def test_set_golden_key(self):
         """Test set_golden_key() sets the number of golden keys to 10"""

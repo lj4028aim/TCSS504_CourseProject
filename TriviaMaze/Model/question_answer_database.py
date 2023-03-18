@@ -42,6 +42,7 @@ class QuestionAnswerDatabase:
     def create_connection(self, db_file):
         """
            create a database connection to the SQLite database specified by the db_file
+
            :param db_file: database file
            :return: connection object or None
            """
@@ -57,6 +58,7 @@ class QuestionAnswerDatabase:
     def main(self):
         """
          Inserting values stored in csv files into database with panda package
+
          :return:
          """
         # database = db_path

@@ -25,15 +25,18 @@ class Maze:
         self.__rooms[rows - 1][cols - 1].set_exit(True)
 
     def __repr__(self):
+        """Returns string representation of Maze"""
         return f"r: {self._rows} c: {self._cols} rms: {str(self.__rooms)}"
 
     def __str__(self):
+        """Returns string representation of Maze"""
         return f"Maze{self._rows}x{self._cols}: {str(self.__rooms)}"
 
     @property
     def rooms(self):
         """
         Method is used to get room.
+
         :return: A 2D array of rooms.
         """
         return self.__rooms

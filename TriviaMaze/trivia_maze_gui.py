@@ -78,6 +78,7 @@ class TriviaMazeGUI:
     def about_the_game(self, event=None):
         """
         Return information of 'About' under 'Help' menu bar.
+
         :param event: used for setting up shortcut key.
         """
         with open("about_message.txt") as file:
@@ -88,6 +89,7 @@ class TriviaMazeGUI:
     def exit_game(self, event=None):
         """
         Handle command exit.
+
         :param event: used for setting up shortcut key.
         """
         answer = messagebox.askyesnocancel(title="Exit", message="Do you want to exit the game? ")
@@ -99,6 +101,7 @@ class TriviaMazeGUI:
     def how_to_play(self, event=None):
         """
         Return game instruction information.
+
         :param event: used for setting up shortcut key.
         """
         with open("Instructions_TriviaMaze.txt") as file:

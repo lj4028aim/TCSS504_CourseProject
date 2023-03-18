@@ -36,9 +36,11 @@ class Room:
         self.east = Door.EXIST.value
 
     def __repr__(self):
+        """String representation of Room"""
         return f"r: {self.row} c: {self.col} n: {self.north} s: {self.south} w: {self.west} e: {self.east}"
 
     def __str__(self):
+        """String representation of Room"""
         return f"row: {self.row} column: {self.col} north: {self.north} south: {self.south} west: {self.west} east: " \
                f"{self.east} "
 

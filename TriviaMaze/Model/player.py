@@ -1,8 +1,9 @@
 class Player:
 
-    def __init__(self, maze, name="monster", golden_key=10):
+    def __init__(self, maze, name="monster", golden_key=5):
         """
         Initialize a new instance of Player
+
         :param maze: maze used in the game
         :param name: by default, the name is 'monster'
         :param golden_key: be default, the golden_key is set to 10
@@ -20,6 +21,7 @@ class Player:
     def move_player(self, x, y):
         """
         Moves the position of Player to then given coordinates.
+
         :param x: horizontal coordinate
         :param y: vertical coordinate
         """
@@ -53,6 +55,7 @@ class Player:
     def get_golden_key(self):
         """
         Returns the number of golden keys
+
         :return: number of golden keys
         """
         return self.golden_key
@@ -60,6 +63,7 @@ class Player:
     def get_is_golden_key(self):
         """
         Returns True when there is permission to use golden key otherwise False
+
         :return: boolean, there is permission to use a golden key
         """
         return self.is_golden_key
@@ -67,6 +71,7 @@ class Player:
     def set_is_golden_key(self, is_golden_key):
         """
         Given True, allows for permission to use golden key
+
         :param is_golden_key: boolean, permission to use golden key
         """
         self.is_golden_key = is_golden_key
