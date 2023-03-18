@@ -1,6 +1,6 @@
 class Player:
 
-    def __init__(self, maze, name="monster", golden_key=1):
+    def __init__(self, maze, name="monster", golden_key=10):
         """Initialize a new instance of Player"""
         self.name = str(name)
         self.maze = maze
@@ -29,6 +29,21 @@ class Player:
         self.coordinates = [1, 1]
         self.golden_key = 1
         self.is_golden_key = False
+
+    def set_golden_key(self, set_golden_key):
+        """Set golden key cnt"""
+        self.golden_key = int(set_golden_key)
+    def get_name(self):
+        """
+        Returns the player name
+        """
+        return self.name
+
+    def set_name(self, name):
+        """
+        Set the player name
+        """
+        self.name = str(name)
 
     def get_golden_key(self):
         """

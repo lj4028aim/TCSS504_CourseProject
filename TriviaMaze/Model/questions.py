@@ -62,7 +62,7 @@ class Questions:
 
             cur = conn.cursor()
             cur.execute("SELECT *  FROM Questions")
-            rows = cur.fetchmany(200)
+            rows = cur.fetchmany(100)
 
             questions = []
             num_questions = self.gen_num_questions(num_questions_expect)
@@ -89,7 +89,7 @@ class Questions:
         Generate a list holds all unique randomly generated number
         :return: a list which is composed of unique question index
         """
-        total_num_questions = 1  # number of questions stored in database
+        total_num_questions = 100  # number of questions stored in database
         num_questions = []
         while True:
             num = random.randrange(0, total_num_questions)
@@ -117,7 +117,7 @@ class Questions:
 
 if __name__ == "__main__":
     q = Questions()
-    num_questions_expect = 1
+    num_questions_expect = 100
     questions = q.get_questions(num_questions_expect)
     num_questions = len(q.gen_num_questions(num_questions_expect))
     print(f"There are totally {num_questions} questions selected: \n")
