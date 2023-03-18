@@ -22,7 +22,7 @@ In order to pass the door, the player has to answer the question correctly or ch
 
 Door will be closed permanently if player's answer is wrong and choosing not using golden key. Right or wrong feedback will be promptly displayed after player making their choice.
 
-Player will be given only one golden key per each round. It's player's choice when and where to use their golden key.
+Player will be given certain numbers of golden key per each round. It's player's choice when and where to use their golden key.
 
 If no door can be selected and player runns out of golden key, game will be terminated!
 
