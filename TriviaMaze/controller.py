@@ -4,9 +4,9 @@ class Controller:
     def __init__(self, maze, player, questions):
         """
         Initialize new instance of class 'Controller' with attribute maze, player, and question.
-        - maze: maze used in the game.
-        - player: whoever plays the game.
-        - questions: questions used for trivia maze game.
+        :param maze: maze used in the game.
+        :param player: whoever plays the game.
+        :param questions: questions used for trivia maze game.
         """
         self.maze = maze
         self.player = player

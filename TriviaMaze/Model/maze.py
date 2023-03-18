@@ -10,12 +10,12 @@ class Maze:
     def __init__(self, rows=5, cols=5):
         """
         Initialize a new maze object with specific size 5x5.
-        - _rows: an integer number used to represent rows in the maze. The default number of row is 5.
-        - _cols: an integer number used to represent columns in the maze. The default number of column is 5.
-        - __rooms: a 2D array used to represent size of maze.
+        :param rows: an integer number used to represent rows in the maze. The default number of row is 5.
+        :param cols: an integer number used to represent columns in the maze. The default number of column is 5.
         """
         self._rows = rows
         self._cols = cols
+        # a 2D array used to represent size of maze.
         self.__rooms = []
         for i in range(rows):
             self.__rooms.append([])

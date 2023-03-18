@@ -19,20 +19,20 @@ class Room:
     def __init__(self, row, col):
         """
         Initialize new room object with following attributes:
-        - __exit: flag to indicate the room is exit or not. It is 'False' by default.
-        - row: an integer number used to represent index of row of the room.
-        - col: an integer number used to represent index of column of the room.
-        - north: the state of north door.
-        - south: the state of south door.
-        - west: the state of west door.
-        - east: the state of east door.
+        :param row: an integer number used to represent index of row of the room.
+        :param col: an integer number used to represent index of column of the room.
         """
+        # flag to indicate the room is exit or not. It is 'False' by default.
         self.__exit = False
         self.row = row
         self.col = col
+        # the state of north door.
         self.north = Door.EXIST.value
+        # the state of south door.
         self.south = Door.EXIST.value
+        # the state of west door.
         self.west = Door.EXIST.value
+        # the state of east door.
         self.east = Door.EXIST.value
 
     def __repr__(self):

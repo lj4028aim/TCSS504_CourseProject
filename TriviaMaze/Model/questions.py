@@ -15,12 +15,11 @@ class Questions:
     def __init__(self):
         """
         Initialize new questions object with question and answer attributes.
-        - question: a list used to contain all fetched questions retrieved from database. Each question will be
-        represented as a dictionary format with keys 'question', 'A', 'B', 'C', 'D', and 'correct_answer'
-        - answer: a list used to contain all correct answers associated with each specific
-        question held in self.question.
         """
+        # a list used to contain all fetched questions retrieved from database. Each question will be
+        # represented as a dictionary format with keys 'question', 'A', 'B', 'C', 'D', and 'correct_answer'
         self.question = []
+        # a list used to contain all correct answers associated with each specific question held in self.question.
         self.answer = []
 
     def get_db_path(self):
